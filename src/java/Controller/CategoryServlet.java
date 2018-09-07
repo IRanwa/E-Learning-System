@@ -7,12 +7,14 @@ package Controller;
 
 import Model.Category;
 import Model.DAO;
+import Model.Subject;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -58,10 +60,21 @@ public class CategoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String command = request.getParameter("Category");
+        HttpSession session = request.getSession();
+        String command = (String) session.getAttribute("category-command");
         switch(command){
-            case "Add-Subject_Category":
-                addSubCategory(request, response);
+            case "Add-Subject-Category":
+                boolean catStatus = addSubCategory(request, response);
+                if(catStatus){
+                   request.setAttribute("display_msg", true);
+                   request.setAttribute("msg", "Subject Added Successfully!");
+                   request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
+                }else{
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Subject adding Un-Successful!");
+                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
+                }
+                
                 break;
         }
     }
@@ -92,11 +105,8 @@ public class CategoryServlet extends HttpServlet {
 
     private boolean addSubCategory(HttpServletRequest request, HttpServletResponse response){
         DAO dao = new DAO();
-        String cTitle = request.getParameter("CTitle");
-        String cDesc = request.getParameter("CDesc");
-        Category category =new Category(cTitle, cDesc);
-        
-        return false;
-        
+        HttpSession session = request.getSession();
+        Category category = (Category) session.getAttribute("category");
+        return dao.addCategory(category);
     }
 }

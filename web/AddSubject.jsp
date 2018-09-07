@@ -8,27 +8,30 @@
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
-    <title>Home Page (E-Learning)</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% String title = pageContext.getServletContext().getInitParameter("Webpage-Title");%>
+    <head>
+        <title>Home Page (<%= title %>)</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" type="text/css" href="CSS/style.css">
-    <style>
-        body {font-family: "Times New Roman", Georgia, Serif;}
-        h1,h2,h3,h4,h5,h6 {
-            font-family: "Playfair Display";
-            letter-spacing: 5px;
-        }
+        <link rel="stylesheet" type="text/css" href="CSS/style.css">
+        <style>
+            body {font-family: "Times New Roman", Georgia, Serif;}
+            h1,h2,h3,h4,h5,h6 {
+                font-family: "Playfair Display";
+                letter-spacing: 5px;
+            }
 
-        #nav-subject-container{display:none;}
-        #nav-subject:hover #nav-subject-container{color:red;display:block}
-    </style>
+            #nav-subject-container{display:none;}
+            #nav-subject:hover #nav-subject-container{color:red;display:block}
+        </style>
+    </head>
     <body class="w3-amber">
-
+        
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
             <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
-                <a href="index.html" class="w3-bar-item w3-button">E-Learning Sri Lanka</a>
+                <a href="index.html" class="w3-bar-item w3-button"><%= title %></a>
                 <!-- Right-sided navbar links. Hide them on small screens -->
 
                 <div class="w3-right w3-hide-small">
@@ -81,14 +84,14 @@
         <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
             <img class="w3-image" src="Images/e-learning%20(1).png" alt="Main Image" width="1600" height="800">
             <div class="w3-display-bottomleft w3-padding-large w3-opacity">
-                <h1 class="w3-xxlarge">E-Learning Sri Lanka</h1>
+                <h1 class="w3-xxlarge"><%= title %></h1>
             </div>
         </header>
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
             <div id="regmsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%; text-align: center;">
+                 style="max-width:500px; margin: 1% 30%; text-align: center;">
                 <h1>${msg}</h1>
             </div>
         </c:if>
@@ -97,7 +100,7 @@
         <!-- Error Message -->
         <c:if test="${display_error}">
             <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%">
+                 style="max-width:500px; margin: 1% 30%">
                 <p><font color="red">*</font> ${error_msg}</p>
             </div>
         </c:if>
@@ -117,7 +120,7 @@
                 </div>
                 <div>
                     <p><strong>Subject Description <font color="red">*</font></strong></p>
-                    <textarea class="w3-input w3-border-gray" style="border:1px solid" name="CDescription"  rows="3" placeholder="Subject Description" required></textarea>
+                    <textarea class="w3-input w3-border-gray" style="border:1px solid" name="SDescription"  rows="3" placeholder="Subject Description" required></textarea>
                 </div>
                 <div>
                     <p><strong>Category Title <font color="red">*</font></strong></p>
@@ -138,7 +141,7 @@
 
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
-            <label>Copyright &#169; 2018 E-Learning Sri Lanka. All rights reserved.</label>
+            <label>Copyright &#169; 2018 <%= title %>. All rights reserved.</label>
         </footer>
 
     </body>

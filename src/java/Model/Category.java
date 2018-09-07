@@ -10,15 +10,21 @@ package Model;
  * @author Imesh Ranawaka
  */
 public class Category {
-
+    
+    int sID;
     String cTitle;
     String cDesc;
     
-    public Category(String cTitle, String cDesc) {
+    public Category(int sID, String cTitle, String cDesc) {
+        this.sID = sID;
         this.cTitle = cTitle;
         this.cDesc = cDesc;
     }
 
+    public void setsID(int sID) {
+        this.sID = sID;
+    }
+    
     public void setcTitle(String cTitle) {
         this.cTitle = cTitle;
     }
@@ -27,6 +33,10 @@ public class Category {
         this.cDesc = cDesc;
     }
 
+    public int getsID() {
+        return sID;
+    }
+    
     public String getcTitle() {
         return cTitle;
     }

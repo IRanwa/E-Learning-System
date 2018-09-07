@@ -5,6 +5,7 @@
  */
 package Controller;
 
+import Model.Category;
 import Model.DAO;
 import Model.Subject;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -85,23 +87,32 @@ public class SubjectServlet extends HttpServlet {
             throws ServletException, IOException {
         String command = request.getParameter("command");
         DAO dao = new DAO();
-        switch(command){
+        switch (command) {
             case "add-subject":
-                boolean subStatus = addSubject(request, response,dao);
-                if(subStatus){
-                   
-                   request.setAttribute("display_msg", true);
-                   request.setAttribute("msg", "Subject Added Successfully!");
-                   request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
-                }else{
-                   request.setAttribute("display_error", true);
-                   request.setAttribute("error_msg", "Subject already added!");
-                   request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
+                boolean subStatus = addSubject(request, response, dao);
+                if (subStatus) {
+                    String title = request.getParameter("STitle");
+                    Subject subject = new Subject(title);
+                    int sID = dao.getSID(subject);
+                    String cTitle = request.getParameter("CTitle");
+                    String cDesc = request.getParameter("CDescription");
+                    Category category = new Category(sID, cTitle, cDesc);
+
+                    HttpSession session = request.getSession();
+                    session.setAttribute("category", category);
+                    session.setAttribute("category-command", "Add-Subject-Category");
+                    response.sendRedirect("CategoryServlet");
+                    //request.getRequestDispatcher("CategoryServlet").include(request, response);
+
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Subject already added!");
+                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
                 }
                 break;
-            
+
         }
- 
+
     }
 
     /**
@@ -114,28 +125,29 @@ public class SubjectServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private boolean addSubject(HttpServletRequest request, HttpServletResponse response, DAO dao){
-      String sTitle = request.getParameter("STitle");
-      boolean subStatus = dao.checkSubject(sTitle);
-      if(subStatus){
-          String sDesc = request.getParameter("SDescription");
-          Subject subject = new Subject(sTitle, sDesc);
-          return dao.addSubject(subject);
-      }
-      return false;
-    } 
-    
-    private boolean removeSubject(HttpServletRequest request, HttpServletResponse response, DAO dao){
+    private boolean addSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        String title = request.getParameter("STitle");
+        Subject subject = new Subject(title);
+        boolean subStatus = dao.checkSubject(subject);
+        if (!subStatus) {
+            String desc = request.getParameter("SDescription");
+            subject.setsDes(desc);
+            return dao.addSubject(subject);
+        }
         return false;
-        
     }
-    
-    private boolean updateSubject(HttpServletRequest request, HttpServletResponse response, DAO dao){
+
+    private boolean removeSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         return false;
-        
+
     }
-    
-    private void viewSubject(HttpServletRequest request, HttpServletResponse response, DAO dao){
-        
+
+    private boolean updateSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        return false;
+
+    }
+
+    private void viewSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+
     }
 }

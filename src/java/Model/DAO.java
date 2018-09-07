@@ -136,10 +136,10 @@ public class DAO {
     /*Teacher Table End*/
     
     /*Subject Table*/
-    public boolean checkSubject(String sTitle){
+    public boolean checkSubject(Subject subject){
         try {
-            PreparedStatement ps = new PreparedStatement((MySQLConnection) connection,"select * from subject where title=?");
-            ps.setString(1,sTitle);
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject where title=?");
+            ps.setString(1,subject.getsTitle());
             ResultSet rs = ps.executeQuery();
             return rs.next();
         } catch (SQLException ex) {
@@ -150,7 +150,7 @@ public class DAO {
     
     public boolean addSubject(Subject subject){
         try {
-            PreparedStatement ps =new PreparedStatement((MySQLConnection) connection, "insert into subject (sTitle,sDesc) values (?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into subject (title,description) values (?,?)");
             ps.setString(1, subject.getsTitle());
             ps.setString(2, subject.getsDes());
             ps.executeUpdate();
@@ -160,5 +160,36 @@ public class DAO {
         }
         return false;
     }
+    
+    public int getSID(Subject subject){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select sID from subject where title=?");
+            ps.setString(1, subject.getsTitle());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                return rs.getInt("sID");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
     /*Subject Table End*/
+    
+    /*Category Table*/
+    public boolean addCategory(Category category){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into category (sID,title,description) values (?,?,?)");
+            ps.setInt(1, category.getsID());
+            ps.setString(2, category.getcTitle());
+            ps.setString(3, category.getcDesc());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    /*Category Table End*/
 }

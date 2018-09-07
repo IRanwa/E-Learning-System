@@ -15,8 +15,11 @@ public class Subject {
     String sTitle;
     String sDes;
     
+    public Subject( String sTitle) {
+        this.sTitle = sTitle;
+    }
+    
     public Subject( String sTitle, String sDes) {
-        
         this.sTitle = sTitle;
         this.sDes = sDes;
     }

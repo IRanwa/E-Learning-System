@@ -63,7 +63,7 @@ public class AdminHomeServlet extends HttpServlet {
         
         request.setAttribute("Username",login.getUname());
         
-        request.getRequestDispatcher("/Admin_HomePage.jsp?#welcome").include(request, response);
+        request.getRequestDispatcher("Admin_HomePage.jsp").forward(request, response);
     }
 
     /**
