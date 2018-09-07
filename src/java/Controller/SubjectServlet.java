@@ -63,7 +63,6 @@ public class SubjectServlet extends HttpServlet {
                 response.sendRedirect("AddSubject.jsp#add-subject");
                 break;
             case "Remove-Subject":
-                response.sendRedirect("RemoveSubject.jsp#remove-subject");
                 break;
             case "Update-Subject":
                 break;
