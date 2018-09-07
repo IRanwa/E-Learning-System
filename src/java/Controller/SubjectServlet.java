@@ -63,6 +63,7 @@ public class SubjectServlet extends HttpServlet {
                 response.sendRedirect("AddSubject.jsp#add-subject");
                 break;
             case "Remove-Subject":
+                response.sendRedirect("RemoveSubject.jsp#remove-subject");
                 break;
             case "Update-Subject":
                 break;
@@ -122,7 +123,7 @@ public class SubjectServlet extends HttpServlet {
           Subject subject = new Subject(sTitle, sDesc);
           return dao.addSubject(subject);
       }
-      return false;  
+      return false;
     } 
     
     private boolean removeSubject(HttpServletRequest request, HttpServletResponse response, DAO dao){
