@@ -25,8 +25,14 @@
             #nav-subject-container{display:none;}
             #nav-subject:hover #nav-subject-container{color:red;display:block}
         </style>
+        <script>
+            function scrollToBody() {
+                var elmnt = document.getElementById("add-subject");
+                elmnt.scrollIntoView();
+            }
+        </script>
     </head>
-    <body class="w3-amber">
+    <body class="w3-amber" onload="scrollToBody();">
         
         <!-- Navbar (sit on top) -->
         <div class="w3-top">

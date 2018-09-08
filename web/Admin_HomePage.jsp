@@ -29,9 +29,8 @@
             function scrollToBody() {
                 var elmnt = document.getElementById("welcome");
                 elmnt.scrollIntoView();
-                }
             }
-            );</script>
+        </script>
     </head>
     <body class="w3-amber" onload="scrollToBody();">
 

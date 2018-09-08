@@ -175,6 +175,55 @@ public class DAO {
         }
         return 0;
     }
+    
+    public ArrayList<Subject> getSubList(){
+        ArrayList<Subject> subList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int sID = rs.getInt("sID");
+                String sTitle = rs.getString("title");
+                String sDes = rs.getString("description");
+                Subject subject = new Subject(sID, sTitle, sDes);
+                subList.add(subject);
+            }
+            return subList;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subList;
+    }
+    
+    public Subject getSubject(Subject subject){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject where sID = ?");
+            ps.setInt(1,subject.getsID());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String sTitle = rs.getString("title");
+                String sDes = rs.getString("description");
+                subject.setsTitle(sTitle);
+                subject.setsDes(sDes);
+                return subject;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subject;
+    }
+    
+    public boolean removeSubject(Subject subject){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from subject where sID = ?");
+            ps.setInt(1,subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    } 
     /*Subject Table End*/
     
     /*Category Table*/

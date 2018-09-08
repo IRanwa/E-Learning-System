@@ -126,8 +126,8 @@
             </div>
         </form>
         <!-- Registraion Section End -->
-
-
+        
+        
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <p>Copyright © 2018 <%= title%>. All rights reserved.</p>

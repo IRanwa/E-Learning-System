@@ -11,15 +11,26 @@ package Model;
  */
 public class Subject {
 
-    int sID;
-    String sTitle;
-    String sDes;
+    private int sID;
+    private String sTitle;
+    private String sDes;
+    
+    public Subject(int sID) {
+        this.sID = sID;
+    }
+    
     
     public Subject( String sTitle) {
         this.sTitle = sTitle;
     }
     
     public Subject( String sTitle, String sDes) {
+        this.sTitle = sTitle;
+        this.sDes = sDes;
+    }
+    
+    public Subject(int sID, String sTitle, String sDes) {
+        this.sID = sID;
         this.sTitle = sTitle;
         this.sDes = sDes;
     }
