@@ -11,38 +11,38 @@ package Model;
  */
 public class Category {
     
-    int sID;
+    int cID;
     String cTitle;
-    String cDesc;
+    String cDes;
     
-    public Category(int sID, String cTitle, String cDesc) {
-        this.sID = sID;
+    public Category(int cID, String cTitle, String cDes) {
+        this.cID = cID;
         this.cTitle = cTitle;
-        this.cDesc = cDesc;
+        this.cDes = cDes;
     }
 
-    public void setsID(int sID) {
-        this.sID = sID;
+    public void setcID(int cID) {
+        this.cID = cID;
     }
     
     public void setcTitle(String cTitle) {
         this.cTitle = cTitle;
     }
 
-    public void setcDesc(String cDesc) {
-        this.cDesc = cDesc;
+    public void setcDes(String cDes) {
+        this.cDes = cDes;
     }
 
-    public int getsID() {
-        return sID;
+    public int getcID() {
+        return cID;
     }
     
     public String getcTitle() {
         return cTitle;
     }
 
-    public String getcDesc() {
-        return cDesc;
+    public String getcDes() {
+        return cDes;
     }
     
 }

@@ -61,22 +61,8 @@ public class CategoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String command = (String) session.getAttribute("category-command");
-        switch(command){
-            case "Add-Subject-Category":
-                boolean catStatus = addSubCategory(request, response);
-                if(catStatus){
-                   request.setAttribute("display_msg", true);
-                   request.setAttribute("msg", "Subject Added Successfully!");
-                   request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
-                }else{
-                    request.setAttribute("display_error", true);
-                    request.setAttribute("error_msg", "Subject adding Un-Successful!");
-                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
-                }
-                
-                break;
-        }
+        String command = (String) session.getAttribute("Category");
+        
     }
 
     /**
@@ -103,10 +89,5 @@ public class CategoryServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    private boolean addSubCategory(HttpServletRequest request, HttpServletResponse response){
-        DAO dao = new DAO();
-        HttpSession session = request.getSession();
-        Category category = (Category) session.getAttribute("category");
-        return dao.addCategory(category);
-    }
+    
 }

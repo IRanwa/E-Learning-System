@@ -244,15 +244,34 @@ public class DAO {
     public boolean addCategory(Category category){
         try {
             PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into category (sID,title,description) values (?,?,?)");
-            ps.setInt(1, category.getsID());
+            ps.setInt(1, category.getcID());
             ps.setString(2, category.getcTitle());
-            ps.setString(3, category.getcDesc());
+            ps.setString(3, category.getcDes());
             ps.executeUpdate();
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+    
+    public List<Category> getSubCatList(Subject subject){
+        List<Category> catList = new ArrayList<Category>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from category where sID=?");
+            ps.setInt(1,subject.getsID());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int cID = rs.getInt("cID");
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                Category category = new Category(cID, title, desc);
+                catList.add(category);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return catList;
     }
     /*Category Table End*/
 }

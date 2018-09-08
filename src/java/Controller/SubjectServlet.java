@@ -69,7 +69,7 @@ public class SubjectServlet extends HttpServlet {
                 response.sendRedirect("AddSubject.jsp#add-subject");
                 break;
             case "Remove-Subject":
-                sID = request.getParameter("id");
+                sID = request.getParameter("subjectID");
                 viewSubject(request, response, dao);
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
@@ -81,7 +81,7 @@ public class SubjectServlet extends HttpServlet {
                 //response.sendRedirect("RemoveSubject.jsp#remove-subject");
                 break;
             case "Update-Subject":
-                sID = request.getParameter("id");
+                sID = request.getParameter("subjectID");
                 viewSubject(request, response, dao);
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
@@ -93,7 +93,8 @@ public class SubjectServlet extends HttpServlet {
 
                 break;
             case "View-Subject":
-
+                viewSubject(request, response, dao);
+                request.getRequestDispatcher("/ViewSubject.jsp").forward(request, response);
                 break;
         }
 
@@ -117,19 +118,15 @@ public class SubjectServlet extends HttpServlet {
             case "add-subject":
                 subStatus = addSubject(request, response, dao);
                 if (subStatus) {
-                    String title = request.getParameter("STitle");
-                    Subject subject = new Subject(title);
-                    int sID = dao.getSID(subject);
-                    String cTitle = request.getParameter("CTitle");
-                    String cDesc = request.getParameter("CDescription");
-                    Category category = new Category(sID, cTitle, cDesc);
-
-                    HttpSession session = request.getSession();
-                    session.setAttribute("category", category);
-                    session.setAttribute("category-command", "Add-Subject-Category");
-                    response.sendRedirect("CategoryServlet");
-                    //request.getRequestDispatcher("CategoryServlet").include(request, response);
-
+                    boolean catStatus = addSubCategory(request, response, dao);
+                    if (catStatus) {
+                        request.setAttribute("display_msg", true);
+                        request.setAttribute("msg", "Subject Added Successfully!");
+                    } else {
+                        request.setAttribute("display_error", true);
+                        request.setAttribute("error_msg", "Subject adding Un-Successful!");
+                    }
+                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject already added!");
@@ -142,12 +139,12 @@ public class SubjectServlet extends HttpServlet {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Subject Removed Successfully!");
                     viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
+                    request.getRequestDispatcher("/RemoveSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject removing un-successful!");
                     viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
+                    request.getRequestDispatcher("/RemoveSubject.jsp").include(request, response);
                 }
                 break;
             case "update-subject":
@@ -156,14 +153,26 @@ public class SubjectServlet extends HttpServlet {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Subject Updated Successfully!");
                     viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                    request.getRequestDispatcher("/UpdateSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject updating un-successful!");
                     viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                    request.getRequestDispatcher("/UpdateSubject.jsp").include(request, response);
                 }
                 break;
+            case "view-subject":
+                viewSubject(request, response, dao);
+                String sID = request.getParameter("subjectID");
+                request.setAttribute("displaySubDetails", true);
+                if (sID.equals("All")) {
+                    request.setAttribute("All_Subjects", true);
+                    request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
+                } else {
+                    getSubject(request, response, dao);
+                    getCategory(request, response, dao);
+                    request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
+                }
         }
 
     }
@@ -215,10 +224,26 @@ public class SubjectServlet extends HttpServlet {
     }
 
     private void getSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
-        Integer sID = new Integer(request.getParameter("id"));
+        Integer sID = new Integer(request.getParameter("subjectID"));
         Subject subject = new Subject(sID);
         subject = dao.getSubject(subject);
         request.setAttribute("displaySub", subject);
     }
 
+    private boolean addSubCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        String title = request.getParameter("STitle");
+        Subject subject = new Subject(title);
+        int sID = dao.getSID(subject);
+        String cTitle = request.getParameter("CTitle");
+        String cDesc = request.getParameter("CDescription");
+        Category category = new Category(sID, cTitle, cDesc);
+        return dao.addCategory(category);
+    }
+
+    private void getCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        Subject subject = (Subject) request.getAttribute("displaySub");
+        List<Category> category = dao.getSubCatList(subject);
+        request.setAttribute("displayCatDetails", true);
+        request.setAttribute("Category_List", category);
+    }
 }
