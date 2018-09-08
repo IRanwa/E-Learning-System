@@ -22,8 +22,16 @@
                 letter-spacing: 5px;
             }
         </style>
+        <script>
+            <script>
+            function scrollToBody() {
+                var elmnt = document.getElementById("registration");
+                elmnt.scrollIntoView();
+            }
+        </script>
+        </script>
     </head>
-    <body class="w3-amber">
+    <body class="w3-amber" onload="scrollToBody();">
 
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
@@ -49,7 +57,7 @@
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
-            <div id="regmsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="registration" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%; text-align: center;">
                 <h1>${msg}</h1>
             </div>
@@ -58,7 +66,7 @@
 
         <!-- Error Message -->
         <c:if test="${display_error}">
-            <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="registration" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%">
                 <c:forEach var="error_msg" items="${msgs}">
                     <p><font color="red">*</font> ${error_msg}</p>

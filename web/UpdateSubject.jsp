@@ -1,6 +1,6 @@
 <%-- 
-    Document   : RemoveSubject
-    Created on : Sep 8, 2018, 8:18:05 AM
+    Document   : UpdateSubject
+    Created on : Sep 8, 2018, 11:02:22 PM
     Author     : Imesh Ranawaka
 --%>
 
@@ -9,7 +9,6 @@
 <!DOCTYPE html>
 <html>
     <% String title = pageContext.getServletContext().getInitParameter("Webpage-Title");%>
-    <c:set var="subjectID" value="${null}"/>
     <head>
         <title>Home Page (<%= title%>)</title>
         <meta charset="UTF-8">
@@ -25,54 +24,22 @@
 
             #nav-subject-container{display:none;}
             #nav-subject:hover #nav-subject-container{color:red;display:block}
-
-            .popup-dialog{
-                display:none;
-                position: fixed;
-                z-index: 1;
-                left:0;
-                right:0;
-                top:0;
-                padding-top: 100px;
-                height:100%;
-                width:100%;
-                overflow:auto;
-                background-color: grey;
-                background-color: rgba(0,0,0,0.5);
-            }
-
-            .close:hover,.close:focus{
-                text-decoration: none;
-                cursor: pointer;
-                color: black;
-            }
         </style>
         <script>
-            function viewSub() {
-                var sID = document.getElementById("sub-selection").value;
-                if (sID != "") {
-                    window.location = ("SubjectServlet?Subject=Remove-Subject&id=" + sID);
-                }
-            }
-            function closePopup() {
-                var modal = document.getElementById("popup-message");
-                modal.style.display = "none";
-            }
             function scrollToBody() {
-                var elmnt = document.getElementById("remove-subject");
+                var elmnt = document.getElementById("update-subject");
                 elmnt.scrollIntoView();
             }
-            window.onclick = function (event) {
-                var modal = document.getElementById("popup-message");
-                if (event.target == modal) {
-                    modal.style.display = "none";
+            function updateSubBtnClick(){
+                var sID = document.getElementById("sub-selection").value;
+                if (sID != "") {
+                    window.location = ("SubjectServlet?Subject=Update-Subject&id=" + sID);
                 }
-            }
-            function removeSubBtnClick() {
-                var modal = document.getElementById("popup-message");
-                modal.style.display = "block";
-                document.getElementById("sID").value = document.getElementById("sub-selection").value;
                 return false;
+            }
+            function resetUpdateForm(){
+                document.getElementById("subTitle").value = "";
+                document.getElementById("subDesc").value = "";
             }
         </script>
     </head>
@@ -140,7 +107,7 @@
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="update-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%; text-align: center;">
                 <h1>${msg}</h1>
             </div>
@@ -149,20 +116,20 @@
 
         <!-- Error Message -->
         <c:if test="${display_error}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="update-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%">
                 <p><font color="red">*</font> ${error_msg}</p>
             </div>
         </c:if>
         <!-- Error Message End -->
 
-        <!-- Remove Subject Form -->
-        <form id="remove-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+        <!-- Update Subject Form -->
+        <form id="update-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
               style="max-width:400px; margin: 2% 35%"
-              onsubmit="return removeSubBtnClick()" method="POST">
-            <input type="hidden" name="command" value="remove-subject"/>
+              onsubmit="return updateSubBtnClick()" method="POST">
+            <input type="hidden" name="command" value="update-subject"/>
             <div>
-                <h2>Remove Subject</h2>
+                <h2>Update Subject</h2>
                 <div>
                     <p><strong>Subject Title <font color="red">*</font></strong></p>
                     <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
@@ -181,54 +148,43 @@
                 </div>
 
                 <div>
-                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
-                           onclick="viewSub()"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
+                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Submit"/>
                     <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
                 </div>
             </div>
         </form>
-        <!-- Remove Subject Form End -->
+        <!-- Update Subject Form End -->
 
-        <!-- Display Subject Details -->
+        <!-- Update Subject Details -->
         <c:if test="${displaySubDetails}">
-            <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%">
-                <table  class="w3-table w3-bordered">
-                    <tr>
-                        <th>Subject ID</th>
-                        <th>Subject Title</th>
-                        <th>Subject Description</th>
-                    </tr>
-                    <tr>
-                        <td>${displaySub.sID}</td>
-                        <td>${displaySub.sTitle}</td>
-                        <td>${displaySub.sDes}</td>
-                    </tr>
-                </table>
-            </div>
-        </c:if>
-        <!-- EDisplay Subject Details End -->
-
-        <!-- Popup Confirm Box -->
-        <div id="popup-message" class="popup-dialog">
-            <form action="SubjectServlet" method="POST">
-                <input type="hidden" name="command" value="remove-subject"/>
-                <input type="hidden" id="sID" name="subjectSID" value=""/>
-                <div class="w3-container w3-round w3-white w3-padding w3-animate-top" style="max-width:400px; margin: 1% 35%">
-                    <span class="close" onclick="closePopup()">&times;</span>
-                    <h3>Are you sure you wish to remove the subject?</h3>
-                    <input class="w3-button w3-round w3-text-black w3-teal " type="submit" value="Sure"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal " type="button" onclick="closePopup()" value="Close"/>
+            <form id="subDetails" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+                  style="max-width:500px; margin: 2% 30%"
+                  action="SubjectServlet" method="post">
+                <input type="hidden" name="command" value="update-subject"/>
+                <input type="hidden" name="subjectSID" value="${displaySub.sID}"/>
+                <div>
+                    <p style="color:red">Please fill in the form below.</p> 
+                    <div>
+                        <p><strong>Subject Title <font color="red">*</font></strong></p>
+                        <input class="w3-input" type="text" id="subTitle" name="STitle" value="${displaySub.sTitle}" placeholder="Subject Title" required/>
+                    </div>
+                    <div>
+                        <p><strong>Subject Description <font color="red">*</font></strong></p>
+                        <textarea id="subDesc" class="w3-input w3-border-gray" style="border:1px solid" rows="3" name="SDescription" placeholder="Subject Description" required>${displaySub.sDes}</textarea>
+                    </div>
+                    <div>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Update"/>
+                        <input class="w3-button w3-round w3-text-black w3-teal " type="button" value="Reset" onclick="resetUpdateForm()"/>
+                    </div>  
                 </div>
             </form>
-        </div>
-        <!-- Popup Confirm Box  End -->
+        </c:if>
+        <!-- Update Subject Details End -->
+
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
         </footer>
-
-        
     </body>
 </html>
+

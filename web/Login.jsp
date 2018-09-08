@@ -21,8 +21,14 @@
                 letter-spacing: 5px;
             }
         </style>
+        <script>
+            function scrollToBody() {
+                var elmnt = document.getElementById("login");
+                elmnt.scrollIntoView();
+            }
+        </script>
     </head>
-    <body class="w3-amber">
+    <body class="w3-amber" onload="scrollToBody();">
 
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
@@ -48,7 +54,7 @@
 
         <!-- Display Error Message -->
         <c:if test="${display_error}">
-            <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="login" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%; text-align: center;">
                 <h4>${msg}</h4>
             </div>

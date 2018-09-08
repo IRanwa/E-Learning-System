@@ -223,7 +223,21 @@ public class DAO {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
-    } 
+    }
+    
+    public boolean updateSubject(Subject subject){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("update subject set title = ?, description = ? where sID = ?");
+            ps.setString(1,subject.getsTitle());
+            ps.setString(2,subject.getsDes());
+            ps.setInt(3,subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
     /*Subject Table End*/
     
     /*Category Table*/
