@@ -63,12 +63,13 @@ public class SubjectServlet extends HttpServlet {
             throws ServletException, IOException {
         DAO dao = new DAO();
         String command = request.getParameter("Subject");
+        String sID;
         switch (command) {
             case "Add-Subject":
                 response.sendRedirect("AddSubject.jsp#add-subject");
                 break;
             case "Remove-Subject":
-                String sID = request.getParameter("id");
+                sID = request.getParameter("id");
                 viewSubject(request, response, dao);
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
@@ -80,6 +81,16 @@ public class SubjectServlet extends HttpServlet {
                 //response.sendRedirect("RemoveSubject.jsp#remove-subject");
                 break;
             case "Update-Subject":
+                sID = request.getParameter("id");
+                viewSubject(request, response, dao);
+                if (sID != null && !sID.equals("")) {
+                    getSubject(request, response, dao);
+                    request.setAttribute("displaySubDetails", true);
+                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                }
+
                 break;
             case "View-Subject":
 
@@ -127,17 +138,32 @@ public class SubjectServlet extends HttpServlet {
                 break;
             case "remove-subject":
                 subStatus = removeSubject(request, response, dao);
-                if(subStatus){
+                if (subStatus) {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Subject Removed Successfully!");
                     viewSubject(request, response, dao);
                     request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
-                }else{
+                } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject removing un-successful!");
                     viewSubject(request, response, dao);
                     request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
                 }
+                break;
+            case "update-subject":
+                subStatus = updateSubject(request, response, dao);
+                if (subStatus) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Subject Updated Successfully!");
+                    viewSubject(request, response, dao);
+                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Subject updating un-successful!");
+                    viewSubject(request, response, dao);
+                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
+                }
+                break;
         }
 
     }
@@ -171,8 +197,11 @@ public class SubjectServlet extends HttpServlet {
     }
 
     private boolean updateSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
-        return false;
-
+        Integer sID = new Integer(request.getParameter("subjectSID"));
+        String sTitle = request.getParameter("STitle");
+        String sDes = request.getParameter("SDescription");
+        Subject subject = new Subject(sID, sTitle, sDes);
+        return dao.updateSubject(subject);
     }
 
     private void viewSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
