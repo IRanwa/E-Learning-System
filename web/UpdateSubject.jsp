@@ -30,14 +30,14 @@
                 var elmnt = document.getElementById("update-subject");
                 elmnt.scrollIntoView();
             }
-            function updateSubBtnClick(){
+            function updateSubBtnClick() {
                 var sID = document.getElementById("sub-selection").value;
                 if (sID != "") {
                     window.location = ("SubjectServlet?Subject=Update-Subject&subjectID=" + sID);
                 }
                 return false;
             }
-            function resetUpdateForm(){
+            function resetUpdateForm() {
                 document.getElementById("subTitle").value = "";
                 document.getElementById("subDesc").value = "";
             }
@@ -124,35 +124,37 @@
         <!-- Error Message End -->
 
         <!-- Update Subject Form -->
-        <form id="update-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
-              style="max-width:400px; margin: 2% 35%"
-              onsubmit="return updateSubBtnClick()" method="POST">
-            <input type="hidden" name="command" value="update-subject"/>
-            <div>
-                <h2>Update Subject</h2>
+        <c:if test="${Subject_List!=null}">
+            <form id="update-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+                  style="max-width:400px; margin: 2% 35%"
+                  onsubmit="return updateSubBtnClick()" method="POST">
+                <input type="hidden" name="command" value="update-subject"/>
                 <div>
-                    <p><strong>Subject Title <font color="red">*</font></strong></p>
-                    <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
-                        <option value=""></option>
-                        <c:forEach var="Sub" items="${Subject_List}">
-                            <c:choose>
-                                <c:when test="${displaySub.sID==Sub.sID}">
-                                    <option value="${Sub.sID}" selected> ${Sub.sTitle}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${Sub.sID}" > ${Sub.sTitle}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
-                </div>
+                    <h2>Update Subject</h2>
+                    <div>
+                        <p><strong>Subject Title <font color="red">*</font></strong></p>
+                        <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
+                            <option value=""></option>
+                            <c:forEach var="Sub" items="${Subject_List}">
+                                <c:choose>
+                                    <c:when test="${displaySub.sID==Sub.sID}">
+                                        <option value="${Sub.sID}" selected> ${Sub.sTitle}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${Sub.sID}" > ${Sub.sTitle}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
+                    </div>
 
-                <div>
-                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Submit"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
+                    <div>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Submit"/>
+                        <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </c:if>
         <!-- Update Subject Form End -->
 
         <!-- Update Subject Details -->

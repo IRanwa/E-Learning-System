@@ -157,37 +157,39 @@
         <!-- Error Message End -->
 
         <!-- Remove Subject Form -->
-        <form id="remove-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
-              style="max-width:400px; margin: 2% 35%"
-              onsubmit="return removeSubBtnClick()" method="POST">
-            <input type="hidden" name="command" value="remove-subject"/>
-            <div>
-                <h2>Remove Subject</h2>
+        <c:if test="${Subject_List!=null}">
+            <form id="remove-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+                  style="max-width:400px; margin: 2% 35%"
+                  onsubmit="return removeSubBtnClick()" method="POST">
+                <input type="hidden" name="command" value="remove-subject"/>
                 <div>
-                    <p><strong>Subject Title <font color="red">*</font></strong></p>
-                    <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
-                        <option value=""></option>
-                        <c:forEach var="Sub" items="${Subject_List}">
-                            <c:choose>
-                                <c:when test="${displaySub.sID==Sub.sID}">
-                                    <option value="${Sub.sID}" selected> ${Sub.sTitle}</option>
-                                </c:when>
-                                <c:otherwise>
-                                    <option value="${Sub.sID}" > ${Sub.sTitle}</option>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:forEach>
-                    </select>
-                </div>
+                    <h2>Remove Subject</h2>
+                    <div>
+                        <p><strong>Subject Title <font color="red">*</font></strong></p>
+                        <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
+                            <option value=""></option>
+                            <c:forEach var="Sub" items="${Subject_List}">
+                                <c:choose>
+                                    <c:when test="${displaySub.sID==Sub.sID}">
+                                        <option value="${Sub.sID}" selected> ${Sub.sTitle}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${Sub.sID}" > ${Sub.sTitle}</option>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                        </select>
+                    </div>
 
-                <div>
-                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
-                           onclick="viewSub()"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
+                    <div>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
+                               onclick="viewSub()"/>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
+                        <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </c:if>
         <!-- Remove Subject Form End -->
 
         <!-- Display Subject Details -->
@@ -229,6 +231,6 @@
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
         </footer>
 
-        
+
     </body>
 </html>

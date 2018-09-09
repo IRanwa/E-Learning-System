@@ -10,6 +10,7 @@ import Model.DAO;
 import Model.Subject;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,6 @@ public class CategoryServlet extends HttpServlet {
 //            out.println("</html>");
 //        }
 //    }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -60,9 +60,14 @@ public class CategoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        String command = (String) session.getAttribute("Category");
-        
+        String command = request.getParameter("Category");
+        DAO dao = new DAO();
+        switch (command) {
+            case "Add-Category":
+                viewSubject(request, response, dao);
+                request.getRequestDispatcher("/AddCategory.jsp").include(request, response);
+
+        }
     }
 
     /**
@@ -76,7 +81,23 @@ public class CategoryServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String command = request.getParameter("command");
+        DAO dao = new DAO();
+        boolean status;
+        viewSubject(request, response, dao);
+        switch (command) {
+            case "add-category":
+                status = addCategory(request, response, dao);
+                if (status) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Category Added Successfully!");
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Category adding Un-Successful!");
+                }
+                request.getRequestDispatcher("/AddCategory.jsp").include(request, response);
+                break;
+        }
     }
 
     /**
@@ -89,5 +110,22 @@ public class CategoryServlet extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
+    private void viewSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        List<Subject> subList = dao.getSubList();
+        if (subList.size() != 0) {
+            request.setAttribute("Subject_List", subList);
+        } else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Subjects found!");
+        }
+    }
+
+    private boolean addCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        Integer sID = new Integer(request.getParameter("SID"));
+        String cTitle = request.getParameter("CTitle");
+        String cDes = request.getParameter("CDescription");
+        Category category = new Category(cTitle, cDes, sID);
+        return dao.addCategory(category);
+    }
+
 }

@@ -244,7 +244,7 @@ public class DAO {
     public boolean addCategory(Category category){
         try {
             PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into category (sID,title,description) values (?,?,?)");
-            ps.setInt(1, category.getcID());
+            ps.setInt(1, category.getsID());
             ps.setString(2, category.getcTitle());
             ps.setString(3, category.getcDes());
             ps.executeUpdate();

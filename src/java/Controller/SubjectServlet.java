@@ -234,10 +234,14 @@ public class SubjectServlet extends HttpServlet {
         String title = request.getParameter("STitle");
         Subject subject = new Subject(title);
         int sID = dao.getSID(subject);
-        String cTitle = request.getParameter("CTitle");
-        String cDesc = request.getParameter("CDescription");
-        Category category = new Category(sID, cTitle, cDesc);
-        return dao.addCategory(category);
+
+        if (sID>0) {
+            String cTitle = request.getParameter("CTitle");
+            String cDesc = request.getParameter("CDescription");
+            Category category = new Category(cTitle, cDesc, sID);
+            return dao.addCategory(category);
+        }
+        return false;
     }
 
     private void getCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
