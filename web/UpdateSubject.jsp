@@ -159,7 +159,7 @@
 
         <!-- Update Subject Details -->
         <c:if test="${displaySubDetails}">
-            <form id="subDetails" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+            <form class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
                   style="max-width:500px; margin: 2% 30%"
                   action="SubjectServlet" method="post">
                 <input type="hidden" name="command" value="update-subject"/>

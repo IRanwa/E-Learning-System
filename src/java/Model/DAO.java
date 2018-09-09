@@ -317,5 +317,19 @@ public class DAO {
         }
         return false;
     }
+    
+    public boolean updateCategory(Category category){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("update category set title = ?, description = ? where cID = ?");
+            ps.setString(1,category.getcTitle());
+            ps.setString(2,category.getcDes());
+            ps.setInt(3,category.getcID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
     /*Category Table End*/
 }

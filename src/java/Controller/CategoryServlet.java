@@ -62,14 +62,16 @@ public class CategoryServlet extends HttpServlet {
             throws ServletException, IOException {
         String command = request.getParameter("Category");
         DAO dao = new DAO();
+        String sID;
+        String cID;
         switch (command) {
             case "Add-Category":
                 viewSubject(request, response, dao);
                 request.getRequestDispatcher("/AddCategory.jsp").include(request, response);
                 break;
             case "Remove-Category":
-                String sID = request.getParameter("subjectID");
-                String cID = request.getParameter("categoryID");
+                sID = request.getParameter("subjectID");
+                cID = request.getParameter("categoryID");
                 viewSubject(request, response, dao);
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
@@ -83,6 +85,19 @@ public class CategoryServlet extends HttpServlet {
                     }
                 }
                 request.getRequestDispatcher("/RemoveCategory.jsp").include(request, response);
+                break;
+            case "Update-Category":
+                sID = request.getParameter("subjectID");
+                cID = request.getParameter("categoryID");
+                viewSubject(request, response, dao);
+                if (sID != null && !sID.equals("")) {
+                    getSubject(request, response, dao);
+                    getCategoryList(request, response, dao);
+                    if (cID != null && !cID.equals("")) {
+                       getCategory(request, response, dao);
+                    }
+                }
+                request.getRequestDispatcher("/UpdateCategory.jsp").include(request, response);
                 break;
 
         }
@@ -126,6 +141,19 @@ public class CategoryServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher("/RemoveCategory.jsp").include(request, response);
                 break;
+            case "update-subject":
+                status = updateCategory(request, response, dao);
+                if (status) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Category Updated Successfully!");
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Category updating Un-Successful!");
+                }
+                request.getRequestDispatcher("/UpdateCategory.jsp").include(request, response);
+                break;
+                
+                
         }
     }
 
@@ -194,5 +222,13 @@ public class CategoryServlet extends HttpServlet {
             Category category = new Category(Integer.parseInt(cID));
             return dao.removeCategory(category);
         }
+    }
+    
+    private boolean updateCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) throws ServletException, IOException {
+        Integer cID = new Integer(request.getParameter("categoryCID"));
+        String title = request.getParameter("CTitle");
+        String desc = request.getParameter("CDescription");
+        Category category = new Category(cID, title, desc);
+        return dao.updateCategory(category);
     }
 }

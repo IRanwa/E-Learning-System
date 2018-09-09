@@ -31,7 +31,7 @@ public class Category {
         this.cTitle = cTitle;
         this.cDes = cDes;
     }
-
+    
     public void setcID(int cID) {
         this.cID = cID;
     }
