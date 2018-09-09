@@ -1,6 +1,6 @@
 <%-- 
-    Document   : ViewSubject
-    Created on : Sep 8, 2018, 11:49:27 PM
+    Document   : ViewCategory
+    Created on : Sep 9, 2018, 1:12:33 PM
     Author     : Imesh Ranawaka
 --%>
 
@@ -27,9 +27,30 @@
         </style>
         <script>
             function scrollToBody() {
-                var elmnt = document.getElementById("view-subject");
+                var elmnt = document.getElementById("view-category");
                 elmnt.scrollIntoView();
             }
+
+            function getCategory() {
+                var sID = document.getElementById("sub-selection").value;
+                if (sID != "") {
+                    window.location = ("CategoryServlet?Category=View-Category&subjectID=" + sID);
+                }
+            }
+            function displayCatDetails() {
+                var sID = document.getElementById("sub-selection").value;
+                var cID = document.getElementById("cat-selection").value;
+                if (sID != "" && cID != "") {
+                    window.location = ("CategoryServlet?Category=View-Category&subjectID=" + sID +
+                            "&categoryID=" + cID);
+                }
+            }
+            function resetUpdateForm() {
+                document.getElementById("catTitle").value = "";
+                document.getElementById("catDesc").value = "";
+            }
+
+
         </script>
     </head>
     <body class="w3-amber" onload="scrollToBody();">
@@ -96,42 +117,70 @@
 
         <!-- Error Message -->
         <c:if test="${display_error}">
-            <div id="view-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%">
+            <div id="view-category" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+                 style="max-width:500px; margin: 1% 30%">
                 <p><font color="red">*</font> ${error_msg}</p>
             </div>
         </c:if>
         <!-- Error Message End -->
 
-        <!-- View Subject Form -->
+
+        <!-- Remove Category Form -->
         <c:if test="${Subject_List!=null}">
-            <form id="view-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
-                  style="max-width:400px; margin: 2% 35%"
-                  submit="SubjectServlet" method="POST">
-                <input type="hidden" name="command" value="view-subject"/>
+            <form id="view-category" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+                  style="max-width:500px; margin: 2% 30%" id="add-subject" 
+                  action="CategoryServlet" method="post">
+                <input type="hidden" name="command" value="view-category"/>
                 <div>
-                    <h2>View Subject</h2>
+                    <h2>View Category</h2>
+                    <p style="color:red">Please fill in the form below.</p> 
                     <div>
                         <p><strong>Subject Title <font color="red">*</font></strong></p>
-                        <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
-                            <option value="All">All Subjects</option>
+                        <select class="w3-select w3-round" id="sub-selection" name="subjectID" required
+                                onchange="getCategory()">
+                            <option value=""></option>
                             <c:forEach var="Sub" items="${Subject_List}">
-                                <option value="${Sub.sID}" > ${Sub.sTitle}</option>
+                                <c:choose>
+                                    <c:when test="${displaySub.sID==Sub.sID}">
+                                        <option value="${Sub.sID}" selected> ${Sub.sTitle}</option>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <option value="${Sub.sID}" > ${Sub.sTitle}</option>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </select>
                     </div>
+                    <c:if test="${Category_List!=null}">
+                        <div>
+                            <p><strong>Category Title <font color="red">*</font></strong></p>
+                            <select class="w3-select w3-round" id="cat-selection" name="categoryID" required>
+                                <option value="All">All Categories</option>
+                                <c:forEach var="Cat" items="${Category_List}">
+                                    <c:choose>
+                                        <c:when test="${displayCat.cID==Cat.cID}">
+                                            <option value="${Cat.cID}" selected> ${Cat.cTitle}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${Cat.cID}" > ${Cat.cTitle}</option>
+                                        </c:otherwise>
+                                    </c:choose>
 
-                    <div>
-                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Submit"/>
-                        <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
-                    </div>
+                                </c:forEach>
+                            </select>
+                        </div> 
+                        <div>
+                            <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Submit"/>
+                            <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
+                        </div>
+                    </c:if>
                 </div>
             </form>
         </c:if>
-        <!-- View Subject Form End -->
+        <!-- Remove Category Form End -->
 
-        <!-- View Subject & Category Details -->
-        <c:if test="${displaySubDetails}">
+        <!-- Update Subject Details -->
+        <c:if test="${Category_List!=null}">
             <div class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:60%; margin: 1% 20%">
                 <h3>Subject Details</h3>
@@ -141,53 +190,52 @@
                         <th>Subject Title</th>
                         <th>Subject Description</th>
                     </tr>
-                    <c:choose>
-                        <c:when test="${All_Subjects}">
-                            <c:forEach var="sub" items="${Subject_List}">
-                                <tr>
-                                    <td>${sub.sID}</td>
-                                    <td>${sub.sTitle}</td>
-                                    <td>${sub.sDes}</td>
-                                </tr>
-                            </c:forEach>
-                        </c:when>
-                        <c:otherwise>
-                            <tr>
-                                <td>${displaySub.sID}</td>
-                                <td>${displaySub.sTitle}</td>
-                                <td>${displaySub.sDes}</td>
-                            </tr>
-                        </c:otherwise>
-                    </c:choose>
+                    <tr>
+                        <td>${displaySub.sID}</td>
+                        <td>${displaySub.sTitle}</td>
+                        <td>${displaySub.sDes}</td>
+                    </tr>
                 </table>
 
-                <c:if test="${displayCatDetails}">
-                    <hr>
-                    <h3>Category Details</h3>
-                    <table  class="w3-table w3-bordered">
-                        <tr>
-                            <th>Category ID</th>
-                            <th>Category Title</th>
-                            <th>Category Description</th>
-                        </tr>
-                        <c:forEach var="Cat" items="${Category_List}">
+                <hr>
+                <h3>Category Details</h3>
+                <table  class="w3-table w3-bordered">
+                    <tr>
+                        <th>Category ID</th>
+                        <th>Category Title</th>
+                        <th>Category Description</th>
+                    </tr>
+                    <c:choose>
+                        <c:when test="${displayCat!=null    }">
                             <tr>
-                                <td>${Cat.cID}</td>
-                                <td>${Cat.cTitle}</td>
-                                <td>${Cat.cDes}</td>
+                                <td>${displayCat.cID}</td>
+                                <td>${displayCat.cTitle}</td>
+                                <td>${displayCat.cDes}</td>
                             </tr>
-                        </c:forEach>
-                    </table>
-                </c:if>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach var="Cat" items="${Category_List}">
+                                <tr>
+                                    <td>${Cat.cID}</td>
+                                    <td>${Cat.cTitle}</td>
+                                    <td>${Cat.cDes}</td>
+                                </tr>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+
+                </table>
             </div>
         </c:if>
-        <!-- View Subject & Category Details End -->
+        <!-- Update Subject Details End -->
 
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
         </footer>
+
     </body>
 </html>
+
 
 

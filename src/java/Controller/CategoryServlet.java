@@ -94,12 +94,20 @@ public class CategoryServlet extends HttpServlet {
                     getSubject(request, response, dao);
                     getCategoryList(request, response, dao);
                     if (cID != null && !cID.equals("")) {
-                       getCategory(request, response, dao);
+                        getCategory(request, response, dao);
                     }
                 }
                 request.getRequestDispatcher("/UpdateCategory.jsp").include(request, response);
                 break;
-
+            case "View-Category":
+                sID = request.getParameter("subjectID");
+                viewSubject(request, response, dao);
+                if (sID != null && !sID.equals("")) {
+                    getSubject(request, response, dao);
+                    getCategoryList(request, response, dao);
+                }
+                request.getRequestDispatcher("/ViewCategory.jsp").include(request, response);
+                break;
         }
     }
 
@@ -141,7 +149,7 @@ public class CategoryServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher("/RemoveCategory.jsp").include(request, response);
                 break;
-            case "update-subject":
+            case "update-category":
                 status = updateCategory(request, response, dao);
                 if (status) {
                     request.setAttribute("display_msg", true);
@@ -152,8 +160,18 @@ public class CategoryServlet extends HttpServlet {
                 }
                 request.getRequestDispatcher("/UpdateCategory.jsp").include(request, response);
                 break;
-                
-                
+            case "view-category":
+                String sID = request.getParameter("subjectID");
+                String cID = request.getParameter("categoryID");
+                viewSubject(request, response, dao);
+                getSubject(request, response, dao);
+                getCategoryList(request, response, dao);
+                if (cID != null && !cID.equals("All")) {
+                    getCategory(request, response, dao);
+                }
+                request.getRequestDispatcher("/ViewCategory.jsp").include(request, response);
+                break;
+
         }
     }
 
@@ -189,10 +207,10 @@ public class CategoryServlet extends HttpServlet {
         Integer sID = new Integer(request.getParameter("subjectID"));
         Subject subject = new Subject(sID);
         List<Category> category = dao.getSubCatList(subject);
-        if (category.size()>0) {
+        if (category.size() > 0) {
             request.setAttribute("displayCatDetails", true);
             request.setAttribute("Category_List", category);
-        }else{
+        } else {
             request.setAttribute("display_error", true);
             request.setAttribute("error_msg", "Categories not found!");
         }
@@ -223,7 +241,7 @@ public class CategoryServlet extends HttpServlet {
             return dao.removeCategory(category);
         }
     }
-    
+
     private boolean updateCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) throws ServletException, IOException {
         Integer cID = new Integer(request.getParameter("categoryCID"));
         String title = request.getParameter("CTitle");

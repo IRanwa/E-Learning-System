@@ -74,10 +74,9 @@ public class SubjectServlet extends HttpServlet {
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
                     request.setAttribute("displaySubDetails", true);
-                    request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
-                } else {
-                    request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
                 }
+                request.getRequestDispatcher("/RemoveSubject.jsp").forward(request, response);
+
                 //response.sendRedirect("RemoveSubject.jsp#remove-subject");
                 break;
             case "Update-Subject":
@@ -86,11 +85,8 @@ public class SubjectServlet extends HttpServlet {
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
                     request.setAttribute("displaySubDetails", true);
-                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
-                } else {
-                    request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
                 }
-
+                request.getRequestDispatcher("/UpdateSubject.jsp").forward(request, response);
                 break;
             case "View-Subject":
                 viewSubject(request, response, dao);
@@ -126,40 +122,35 @@ public class SubjectServlet extends HttpServlet {
                         request.setAttribute("display_error", true);
                         request.setAttribute("error_msg", "Subject adding Un-Successful!");
                     }
-                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject already added!");
-                    request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
                 }
+                request.getRequestDispatcher("/AddSubject.jsp").include(request, response);
                 break;
             case "remove-subject":
                 subStatus = removeSubject(request, response, dao);
                 if (subStatus) {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Subject Removed Successfully!");
-                    viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/RemoveSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject removing un-successful!");
-                    viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/RemoveSubject.jsp").include(request, response);
                 }
+                viewSubject(request, response, dao);
+                request.getRequestDispatcher("/RemoveSubject.jsp").include(request, response);
                 break;
             case "update-subject":
                 subStatus = updateSubject(request, response, dao);
                 if (subStatus) {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Subject Updated Successfully!");
-                    viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/UpdateSubject.jsp").include(request, response);
                 } else {
                     request.setAttribute("display_error", true);
                     request.setAttribute("error_msg", "Subject updating un-successful!");
-                    viewSubject(request, response, dao);
-                    request.getRequestDispatcher("/UpdateSubject.jsp").include(request, response);
                 }
+                viewSubject(request, response, dao);
+                request.getRequestDispatcher("/UpdateSubject.jsp").include(request, response);
                 break;
             case "view-subject":
                 viewSubject(request, response, dao);
@@ -167,12 +158,11 @@ public class SubjectServlet extends HttpServlet {
                 request.setAttribute("displaySubDetails", true);
                 if (sID.equals("All")) {
                     request.setAttribute("All_Subjects", true);
-                    request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
                 } else {
                     getSubject(request, response, dao);
                     getCategory(request, response, dao);
-                    request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
                 }
+                request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
         }
 
     }
@@ -235,7 +225,7 @@ public class SubjectServlet extends HttpServlet {
         Subject subject = new Subject(title);
         int sID = dao.getSID(subject);
 
-        if (sID>0) {
+        if (sID > 0) {
             String cTitle = request.getParameter("CTitle");
             String cDesc = request.getParameter("CDescription");
             Category category = new Category(cTitle, cDesc, sID);
