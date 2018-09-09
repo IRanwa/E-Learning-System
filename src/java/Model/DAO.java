@@ -273,5 +273,49 @@ public class DAO {
         }
         return catList;
     }
+    
+    public Category getCategory(Category category){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from category where cID=?");
+            ps.setInt(1,category.getcID());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                category.setcTitle(title);
+                category.setcDes(desc);
+                return category;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return category;
+    }
+    
+    //Remove the all the categories related to the specific subject
+    public boolean removeCategory(Subject subject){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from category where sID = ?");
+            ps.setInt(1,subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    //Remove the specific category
+    public boolean removeCategory(Category category){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from category where cID = ?");
+            ps.setInt(1,category.getcID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
     /*Category Table End*/
 }

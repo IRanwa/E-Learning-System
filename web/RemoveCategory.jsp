@@ -1,6 +1,6 @@
 <%-- 
-    Document   : RemoveSubject
-    Created on : Sep 8, 2018, 8:18:05 AM
+    Document   : RemoveCategory
+    Created on : Sep 9, 2018, 8:44:26 AM
     Author     : Imesh Ranawaka
 --%>
 
@@ -24,7 +24,7 @@
 
             #nav-dropdown-container{display:none;}
             #nav-dropdown:hover #nav-dropdown-container{color:red;display:block}
-
+            
             .popup-dialog{
                 display:none;
                 position: fixed;
@@ -47,19 +47,29 @@
             }
         </style>
         <script>
-            function viewSub() {
+            function scrollToBody() {
+                var elmnt = document.getElementById("remove-category");
+                elmnt.scrollIntoView();
+            }
+            
+            function getCategory(){
                 var sID = document.getElementById("sub-selection").value;
-                if (sID != "") {
-                    window.location = ("SubjectServlet?Subject=Remove-Subject&subjectID=" + sID);
+                if(sID != ""){
+                    window.location = ("CategoryServlet?Category=Remove-Category&subjectID=" + sID);
+                }
+            }
+            
+            function viewDetails() {
+                var sID = document.getElementById("sub-selection").value;
+                var cID = document.getElementById("cat-selection").value;
+                if (sID != "" && cID!="") {
+                    window.location = ("CategoryServlet?Category=Remove-Category&subjectID=" + sID
+                            +"&categoryID="+cID);
                 }
             }
             function closePopup() {
                 var modal = document.getElementById("popup-message");
                 modal.style.display = "none";
-            }
-            function scrollToBody() {
-                var elmnt = document.getElementById("remove-subject");
-                elmnt.scrollIntoView();
             }
             window.onclick = function (event) {
                 var modal = document.getElementById("popup-message");
@@ -67,10 +77,15 @@
                     modal.style.display = "none";
                 }
             }
-            function removeSubBtnClick() {
+            function removeCatBtnClick() {
                 var modal = document.getElementById("popup-message");
                 modal.style.display = "block";
-                document.getElementById("sID").value = document.getElementById("sub-selection").value;
+                if(${Category_List!=null}){
+                    document.getElementById("cID").value = document.getElementById("cat-selection").value;
+                    document.getElementById("sID").value = document.getElementById("sub-selection").value;
+                }else{
+                    window.location = window.location;
+                }
                 return false;
             }
         </script>
@@ -139,8 +154,8 @@
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%; text-align: center;">
+            <div id="remove-category" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+                 style="max-width:500px; margin: 1% 30%; text-align: center;">
                 <h1>${msg}</h1>
             </div>
         </c:if>
@@ -148,24 +163,27 @@
 
         <!-- Error Message -->
         <c:if test="${display_error}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%">
+            <div id="remove-category" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+                 style="max-width:500px; margin: 1% 30%">
                 <p><font color="red">*</font> ${error_msg}</p>
             </div>
         </c:if>
         <!-- Error Message End -->
 
-        <!-- Remove Subject Form -->
+
+        <!-- Remove Category Form -->
         <c:if test="${Subject_List!=null}">
-            <form id="remove-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
-                  style="max-width:400px; margin: 2% 35%"
-                  onsubmit="return removeSubBtnClick()" method="POST">
-                <input type="hidden" name="command" value="remove-subject"/>
+            <form id="remove-category" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+                  style="max-width:500px; margin: 2% 30%" id="add-subject" 
+                  onsubmit="return removeCatBtnClick()" method="post">
+                <input type="hidden" name="command" value="remove-category"/>
                 <div>
-                    <h2>Remove Subject</h2>
+                    <h2>Add Category</h2>
+                    <p style="color:red">Please fill in the form below.</p> 
                     <div>
                         <p><strong>Subject Title <font color="red">*</font></strong></p>
-                        <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
+                        <select class="w3-select w3-round" id="sub-selection" name="SID" required
+                                onchange="getCategory()">
                             <option value=""></option>
                             <c:forEach var="Sub" items="${Subject_List}">
                                 <c:choose>
@@ -179,22 +197,41 @@
                             </c:forEach>
                         </select>
                     </div>
-
-                    <div>
-                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
-                               onclick="viewSub()"/>
-                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
-                        <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
-                    </div>
+                    <c:if test="${Category_List!=null}">
+                        <div>
+                            <p><strong>Category Title <font color="red">*</font></strong></p>
+                            <select class="w3-select w3-round" id="cat-selection" name="CID" required>
+                                <option value="All">All Categories</option>
+                                <c:forEach var="Cat" items="${Category_List}">
+                                    <c:choose>
+                                        <c:when test="${displayCat.cID==Cat.cID}">
+                                            <option value="${Cat.cID}" selected> ${Cat.cTitle}</option>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <option value="${Cat.cID}" > ${Cat.cTitle}</option>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    
+                                </c:forEach>
+                            </select>
+                        </div> 
+                    </c:if>
+                </div>
+                <div>
+                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
+                           onclick="viewDetails()"/>
+                    <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
+                    <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
                 </div>
             </form>
         </c:if>
-        <!-- Remove Subject Form End -->
+        <!-- Remove Category Form End -->
 
-        <!-- Display Subject Details -->
+        <!-- View Subject & Category Details -->
         <c:if test="${displaySubDetails}">
-            <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
-                 style="max-width:400px; margin: 1% 35%">
+            <div class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+                 style="max-width:60%; margin: 1% 20%">
+                <h3>Subject Details</h3>
                 <table  class="w3-table w3-bordered">
                     <tr>
                         <th>Subject ID</th>
@@ -207,29 +244,63 @@
                         <td>${displaySub.sDes}</td>
                     </tr>
                 </table>
+
+                <c:if test="${displayCatDetails}">
+                    <hr>
+                    <h3>Category Details</h3>
+                    <table  class="w3-table w3-bordered">
+                        <tr>
+                            <th>Category ID</th>
+                            <th>Category Title</th>
+                            <th>Category Description</th>
+                        </tr>
+                        <c:choose>
+                            <c:when test="${displayCat==null}">
+                                <c:forEach var="Cat" items="${Category_List}">
+                                    <tr>
+                                        <td>${Cat.cID}</td>
+                                        <td>${Cat.cTitle}</td>
+                                        <td>${Cat.cDes}</td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td>${displayCat.cID}</td>
+                                    <td>${displayCat.cTitle}</td>
+                                    <td>${displayCat.cDes}</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </table>
+                </c:if>
             </div>
         </c:if>
-        <!-- EDisplay Subject Details End -->
+        <!-- View Subject & Category Details End -->
 
         <!-- Popup Confirm Box -->
         <div id="popup-message" class="popup-dialog">
-            <form action="SubjectServlet" method="POST">
-                <input type="hidden" name="command" value="remove-subject"/>
-                <input type="hidden" id="sID" name="subjectSID" value=""/>
+            <form action="CategoryServlet" method="POST">
+                <input type="hidden" name="command" value="remove-category"/>
+                <input type="hidden" id="sID" name="subjectsID" value=""/>
+                <input type="hidden" id="cID" name="categorycID" value=""/>
                 <div class="w3-container w3-round w3-white w3-padding w3-animate-top" style="max-width:400px; margin: 1% 35%">
                     <span class="close" onclick="closePopup()">&times;</span>
-                    <p class="w3-large">Are you sure you wish to remove the subject?</p>
+                    <p class="w3-large ">Are you sure you wish to remove the category?</p>
                     <input class="w3-button w3-round w3-text-black w3-teal w3-margin-right" type="submit" value="Sure"/>
-                    <input class="w3-button w3-round w3-text-black w3-teal " type="button" onclick="closePopup()" value="Close"/>
+                    <input class="w3-button w3-round w3-text-black w3-teal" type="button" onclick="closePopup()" value="Close"/>
                 </div>
             </form>
         </div>
         <!-- Popup Confirm Box  End -->
+        
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
         </footer>
 
-
     </body>
 </html>
+
+

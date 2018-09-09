@@ -22,8 +22,8 @@
                 letter-spacing: 5px;
             }
 
-            #nav-subject-container{display:none;}
-            #nav-subject:hover #nav-subject-container{color:red;display:block}
+            #nav-dropdown-container{display:none;}
+            #nav-dropdown:hover #nav-dropdown-container{color:red;display:block}
         </style>
         <script>
             function scrollToBody() {
@@ -46,9 +46,9 @@
                     <a href="LogoutServlet" class="w3-bar-item w3-button">Logout</a>
                 </div>
 
-                <div class="w3-right w3-hide-small" id="nav-subject" >
+                <div class="w3-right w3-hide-small" id="nav-dropdown" >
                     <a href="CategoryServlet?Category=View-Category" class="w3-bar-item w3-button" >Category</a>
-                    <div id="nav-subject-container" class="w3-white w3-card" 
+                    <div id="nav-dropdown-container" class="w3-white w3-card" 
                          style="position:absolute; margin-top:35px; width:120px">
                         <a href="CategoryServlet?Category=Add-Category" class="w3-bar-item w3-button">
                             Add Category
@@ -65,9 +65,9 @@
                     </div>
                 </div>
 
-                <div class="w3-right w3-hide-small" id="nav-subject" >
+                <div class="w3-right w3-hide-small" id="nav-dropdown" >
                     <a href="SubjectServlet?Subject=View-Subject" class="w3-bar-item w3-button" >Subject</a>
-                    <div id="nav-subject-container" class="w3-white w3-card" 
+                    <div id="nav-dropdown-container" class="w3-white w3-card" 
                          style="position:absolute; margin-top:35px; width:120px">
                         <a href="SubjectServlet?Subject=Add-Subject" class="w3-bar-item w3-button">
                             Add Subject

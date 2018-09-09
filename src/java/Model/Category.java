@@ -16,6 +16,10 @@ public class Category {
     String cDes;
     int sID;
     
+    public Category(int cID) {
+        this.cID = cID;
+    }
+    
     public Category(String cTitle, String cDes, int sID) {
         this.cTitle = cTitle;
         this.cDes = cDes;
