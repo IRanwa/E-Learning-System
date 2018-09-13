@@ -33,14 +33,14 @@
 
             function getCategory() {
                 var sID = document.getElementById("sub-selection").value;
-                if (sID != "") {
+                if (sID !== "") {
                     window.location = ("CategoryServlet?Category=View-Category&subjectID=" + sID);
                 }
             }
             function displayCatDetails() {
                 var sID = document.getElementById("sub-selection").value;
                 var cID = document.getElementById("cat-selection").value;
-                if (sID != "" && cID != "") {
+                if (sID !== "" && cID !== "") {
                     window.location = ("CategoryServlet?Category=View-Category&subjectID=" + sID +
                             "&categoryID=" + cID);
                 }

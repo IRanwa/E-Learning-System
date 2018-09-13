@@ -54,7 +54,7 @@
             
             function getCategory(){
                 var sID = document.getElementById("sub-selection").value;
-                if(sID != ""){
+                if(sID !== ""){
                     window.location = ("CategoryServlet?Category=Remove-Category&subjectID=" + sID);
                 }
             }
@@ -62,7 +62,7 @@
             function viewDetails() {
                 var sID = document.getElementById("sub-selection").value;
                 var cID = document.getElementById("cat-selection").value;
-                if (sID != "" && cID!="") {
+                if (sID !== "" && cID!=="") {
                     window.location = ("CategoryServlet?Category=Remove-Category&subjectID=" + sID
                             +"&categoryID="+cID);
                 }
@@ -73,10 +73,10 @@
             }
             window.onclick = function (event) {
                 var modal = document.getElementById("popup-message");
-                if (event.target == modal) {
+                if (event.target === modal) {
                     modal.style.display = "none";
                 }
-            }
+            };
             function removeCatBtnClick() {
                 var modal = document.getElementById("popup-message");
                 modal.style.display = "block";
@@ -84,7 +84,7 @@
                     document.getElementById("cID").value = document.getElementById("cat-selection").value;
                     document.getElementById("sID").value = document.getElementById("sub-selection").value;
                 }else{
-                    window.location = window.location;
+                    window.location.reload();
                 }
                 return false;
             }

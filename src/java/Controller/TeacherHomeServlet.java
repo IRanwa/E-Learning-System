@@ -5,7 +5,6 @@
  */
 package Controller;
 
-import Model.DAO;
 import Model.Login;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Imesh Ranawaka
  */
-public class LoginServlet extends HttpServlet {
+public class TeacherHomeServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +37,10 @@ public class LoginServlet extends HttpServlet {
 //            out.println("<!DOCTYPE html>");
 //            out.println("<html>");
 //            out.println("<head>");
-//            out.println("<title>Servlet LoginServlet</title>");            
+//            out.println("<title>Servlet TeacherHomeServlet</title>");            
 //            out.println("</head>");
 //            out.println("<body>");
-//            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+//            out.println("<h1>Servlet TeacherHomeServlet at " + request.getContextPath() + "</h1>");
 //            out.println("</body>");
 //            out.println("</html>");
 //        }
@@ -59,7 +58,9 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        HttpSession session = request.getSession();
+        Login login =  (Login) session.getAttribute("user");
+        request.getRequestDispatcher("Teacher_HomePage.jsp").forward(request, response);
     }
 
     /**
@@ -73,45 +74,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try(PrintWriter out = response.getWriter();) {
-            response.setContentType("text/html");
-            
-            String uname = request.getParameter("UName");
-            String pass = request.getParameter("Pass");
-            
-            Login login = new Login(uname, pass);
-            
-            DAO dao = new DAO();
-            String regType = dao.authenticateUser(login);
-            login.setRegType(regType);
-            HttpSession session = request.getSession();
-            session.setAttribute("user", login);
-            switch(regType){
-                case "Admin":
-                {
-                    
-                    response.sendRedirect("AdminHomeServlet");
-                    break;
-                }
-                case "Student":
-                {
-                    
-                }
-                case "Teacher":
-                {
-                    response.sendRedirect("TeacherHomeServlet");
-                    break;
-                }
-                default:
-                {
-                    request.setAttribute("display_error", true);
-                    request.setAttribute("msg", "Invalid username or password!");
-                    request.getRequestDispatcher("/Login.jsp").include(request, response);
-                    break;
-                }
-                    
-            }
-        }
+        
     }
 
     /**

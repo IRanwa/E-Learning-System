@@ -6,10 +6,10 @@
 package Model;
 
 import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.MySQLConnection;
 import com.mysql.jdbc.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  * @author Imesh Ranawaka
  */
 public class DAO {
-    private Connection connection;
+    private final Connection connection;
     
     public DAO(){
         connection= Database.getConnection();
@@ -29,11 +29,12 @@ public class DAO {
     /*Login Table*/
     public boolean checkUName(String uname){
         try{
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from login where uname=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from login where uname=?");
             ps.setString(1, uname);
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -41,11 +42,12 @@ public class DAO {
     
     public boolean checkEmail(String email){
         try{
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from login where email=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from login where email=?");
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             return rs.next();
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -53,15 +55,15 @@ public class DAO {
     
     public boolean addLogin(Login login){
         try{
-            PreparedStatement ps = (PreparedStatement) connection
-                    .prepareStatement("insert into login (uname,pass,email,regType) values (?,?,?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into login (uname,pass,email,regType) values (?,?,?,?)");
             ps.setString(1, login.getUname());
             ps.setString(2, login.getPass());
             ps.setString(3, login.getEmail());
             ps.setString(4, login.getRegType());
             ps.executeUpdate();
             return true;
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
             
         }
@@ -73,8 +75,8 @@ public class DAO {
             String userName = login.getUname();
             String password = login.getPass();
             
-            PreparedStatement ps = (PreparedStatement) connection
-                    .prepareStatement("select uname,pass,regType from login where uname=? and pass=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select uname,pass,regType from login where uname=? and pass=?");
             ps.setString(1, userName);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
@@ -90,7 +92,7 @@ public class DAO {
                 else if(userName.equals(NAME) && password.equals(PWD) && ROLE.equals("T"))
                     return "Teacher";
             }
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "invalid";
@@ -100,8 +102,8 @@ public class DAO {
     /*Student Table*/
     public boolean registerStudent(Student student){
         try{
-            PreparedStatement ps = (PreparedStatement) connection
-                    .prepareStatement("insert into student (uname,fname,lname,dob,gender) values (?,?,?,?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into student (uname,fname,lname,dob,gender) values (?,?,?,?,?)");
             ps.setString(1, student.getUname());
             ps.setString(2, student.getFname());
             ps.setString(3, student.getLname());
@@ -109,7 +111,7 @@ public class DAO {
             ps.setString(5, student.getGender());
             ps.executeUpdate();
             return true;
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -119,8 +121,8 @@ public class DAO {
     /*Teacher Table*/
     public boolean registerTeacher(Teacher teacher){
         try{
-            PreparedStatement ps = (PreparedStatement) connection
-                    .prepareStatement("insert into teacher (uname,fname,lname,dob,gender) values (?,?,?,?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into teacher (uname,fname,lname,dob,gender) values (?,?,?,?,?)");
             ps.setString(1, teacher.getUname());
             ps.setString(2, teacher.getFname());
             ps.setString(3, teacher.getLname());
@@ -128,7 +130,7 @@ public class DAO {
             ps.setString(5, teacher.getGender());
             ps.executeUpdate();
             return true;
-        }catch(Exception ex){
+        }catch(SQLException ex){
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
@@ -138,7 +140,8 @@ public class DAO {
     /*Subject Table*/
     public boolean checkSubject(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject where title=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where title=?");
             ps.setString(1,subject.getsTitle());
             ResultSet rs = ps.executeQuery();
             return rs.next();
@@ -150,7 +153,8 @@ public class DAO {
     
     public boolean addSubject(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into subject (title,description) values (?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into subject (title,description) values (?,?)");
             ps.setString(1, subject.getsTitle());
             ps.setString(2, subject.getsDes());
             ps.executeUpdate();
@@ -163,7 +167,8 @@ public class DAO {
     
     public int getSID(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select sID from subject where title=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select sID from subject where title=?");
             ps.setString(1, subject.getsTitle());
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -179,7 +184,8 @@ public class DAO {
     public ArrayList<Subject> getSubList(){
         ArrayList<Subject> subList = new ArrayList<>();
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject");
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
                 int sID = rs.getInt("sID");
@@ -197,7 +203,8 @@ public class DAO {
     
     public Subject getSubject(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from subject where sID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where sID = ?");
             ps.setInt(1,subject.getsID());
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -215,7 +222,8 @@ public class DAO {
     
     public boolean removeSubject(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from subject where sID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("delete from subject where sID = ?");
             ps.setInt(1,subject.getsID());
             ps.executeUpdate();
             return true;
@@ -227,7 +235,8 @@ public class DAO {
     
     public boolean updateSubject(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("update subject set title = ?, description = ? where sID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("update subject set title = ?, description = ? where sID = ?");
             ps.setString(1,subject.getsTitle());
             ps.setString(2,subject.getsDes());
             ps.setInt(3,subject.getsID());
@@ -243,7 +252,8 @@ public class DAO {
     /*Category Table*/
     public boolean addCategory(Category category){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("insert into category (sID,title,description) values (?,?,?)");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into category (sID,title,description) values (?,?,?)");
             ps.setInt(1, category.getsID());
             ps.setString(2, category.getcTitle());
             ps.setString(3, category.getcDes());
@@ -256,9 +266,10 @@ public class DAO {
     }
     
     public List<Category> getSubCatList(Subject subject){
-        List<Category> catList = new ArrayList<Category>();
+        List<Category> catList = new ArrayList<>();
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from category where sID=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from category where sID=?");
             ps.setInt(1,subject.getsID());
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -276,7 +287,8 @@ public class DAO {
     
     public Category getCategory(Category category){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from category where cID=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from category where cID=?");
             ps.setInt(1,category.getcID());
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -295,7 +307,8 @@ public class DAO {
     //Remove the all the categories related to the specific subject
     public boolean removeCategory(Subject subject){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from category where sID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("delete from category where sID = ?");
             ps.setInt(1,subject.getsID());
             ps.executeUpdate();
             return true;
@@ -308,7 +321,8 @@ public class DAO {
     //Remove the specific category
     public boolean removeCategory(Category category){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from category where cID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("delete from category where cID = ?");
             ps.setInt(1,category.getcID());
             ps.executeUpdate();
             return true;
@@ -320,7 +334,8 @@ public class DAO {
     
     public boolean updateCategory(Category category){
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("update category set title = ?, description = ? where cID = ?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("update category set title = ?, description = ? where cID = ?");
             ps.setString(1,category.getcTitle());
             ps.setString(2,category.getcDes());
             ps.setInt(3,category.getcID());
@@ -332,4 +347,223 @@ public class DAO {
         return false;
     }
     /*Category Table End*/
+    
+    /*Student Enroll Subject*/
+    public boolean enrollStudent(Subject subject,Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into studentenroll (uname,sID) values (?,?)");
+            ps.setString(1, login.getUname());
+            ps.setInt(2, subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean unenrollStudent(Subject subject,Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("delete from studentenroll where uname=? and sID=?");
+            ps.setString(1, login.getUname());
+            ps.setInt(2, subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    //Here checking at least enrolled for one subject
+    public boolean checkEnrollStudent(Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from studentenroll where uname=?");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    /*Student Enroll Subject End*/
+    
+    /*Teacher Enroll Subject*/
+    public boolean enrollTeacher(Subject subject,Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into teacherenroll (uname,sID) values (?,?)");
+            ps.setString(1, login.getUname());
+            ps.setInt(2, subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    public boolean unenrollTeacher(Subject subject,Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("delete from teacherenroll where uname=? and sID=?");
+            ps.setString(1, login.getUname());
+            ps.setInt(2, subject.getsID());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    //Here checking at least enrolled for one subject
+    public boolean checkEnrollTeacher(Login login){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from teacherenroll where uname=?");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    /*Teacher Enroll Subject End*/
+    
+    //All Contents are available here
+    /*Content Table*/
+    public int addContent(Content content){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into content (title,description,cType,status,tUname,catID) values (?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, content.getTitle());
+            ps.setString(2, content.getDesc());
+            ps.setString(3, content.getType());
+            ps.setString(4, content.getStatus());
+            ps.setString(5, content.gettUName());
+            ps.setInt(6, content.getCatID());
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            while(rs.next()){
+                return rs.getInt(1);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    /*Content Table End*/
+    
+    /*Pending Content Table*/
+    public boolean addPendingContent(Content content){
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("insert into pendingcontent (cID,cPath,dateCreated) values (?,?,?)");
+            ps.setInt(1, content.getcID());
+            ps.setString(2, content.getFilePath());
+            ps.setDate(3,content.getDateCreated() );
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    /*Pending Content Table End*/
+    
+    /*Combine Table*/
+    public List<Subject> getSubNotEnrollStudent(Login login){
+        List<Subject> subList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where sID not IN (select s.sID from subject as s left join studentenroll as se "
+                + "on s.sID=se.sID where se.uname=?)");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int sID = rs.getInt("sID");
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                Subject subject = new Subject(sID, title, desc);
+                subList.add(subject);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subList;
+    }
+    
+    public List<Subject> getSubNotEnrollTeacher(Login login){
+        List<Subject> subList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where sID not IN (select s.sID from subject as s left join teacherenroll as te "
+                + "on s.sID=te.sID where te.uname=?)");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int sID = rs.getInt("sID");
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                Subject subject = new Subject(sID, title, desc);
+                subList.add(subject);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subList;
+    }
+    
+    public List<Subject> getSubEnrollStudent(Login login){
+        List<Subject> subList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where sID IN (select s.sID from subject as s left join studentenroll as se "
+                + "on s.sID=se.sID where se.uname=?)");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int sID = rs.getInt("sID");
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                Subject subject = new Subject(sID, title, desc);
+                subList.add(subject);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subList;
+    }
+    
+    public List<Subject> getSubEnrollTeacher(Login login){
+        List<Subject> subList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement
+        ("select * from subject where sID IN (select s.sID from subject as s left join teacherenroll as te "
+                + "on s.sID=te.sID where te.uname=?)");
+            ps.setString(1,login.getUname());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                int sID = rs.getInt("sID");
+                String title = rs.getString("title");
+                String desc = rs.getString("description");
+                Subject subject = new Subject(sID, title, desc);
+                subList.add(subject);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return subList;
+    }
+    /*Combine Table End*/
 }

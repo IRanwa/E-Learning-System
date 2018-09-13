@@ -24,6 +24,14 @@
         <servlet-name>CategoryServlet</servlet-name>
         <servlet-class>Controller.CategoryServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>TeacherHomeServlet</servlet-name>
+        <servlet-class>Controller.TeacherHomeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ContentServlet</servlet-name>
+        <servlet-class>Controller.ContentServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationServlet</servlet-name>
         <url-pattern>/RegistrationServlet</url-pattern>
@@ -44,9 +52,21 @@
         <servlet-name>CategoryServlet</servlet-name>
         <url-pattern>/CategoryServlet</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TeacherHomeServlet</servlet-name>
+        <url-pattern>/TeacherHomeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ContentServlet</servlet-name>
+        <url-pattern>/ContentServlet</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
+    <error-page>
+        <error-code>500 </error-code>
+        <location>/index.html</location>
+    </error-page>
 </web-app>

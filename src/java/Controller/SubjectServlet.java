@@ -7,10 +7,9 @@ package Controller;
 
 import Model.Category;
 import Model.DAO;
+import Model.Login;
 import Model.Subject;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -92,6 +91,27 @@ public class SubjectServlet extends HttpServlet {
                 viewSubject(request, response, dao);
                 request.getRequestDispatcher("/ViewSubject.jsp").forward(request, response);
                 break;
+            case "Enroll":
+                sID = request.getParameter("subjectID");
+                getSubjectsNotEnroll(request, response, dao);
+                if (sID != null && !sID.equals("")) {
+                    getSubject(request, response, dao);
+                    getCategory(request, response, dao);
+                    request.setAttribute("displaySubDetails", true);
+                }
+                request.getRequestDispatcher("/Enroll.jsp").forward(request, response);
+                break;
+            case "Un-Enroll":
+                sID = request.getParameter("subjectID");
+                getSubjectsEnroll(request, response, dao);
+                if (sID != null && !sID.equals("")) {
+                    getSubject(request, response, dao);
+                    getCategory(request, response, dao);
+                    request.setAttribute("displaySubDetails", true);
+                }
+                request.getRequestDispatcher("/Un-Enroll.jsp").forward(request, response);
+                break;
+            
         }
 
     }
@@ -107,6 +127,9 @@ public class SubjectServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        session.setAttribute("user", login);
         String command = request.getParameter("command");
         DAO dao = new DAO();
         boolean subStatus;
@@ -163,6 +186,32 @@ public class SubjectServlet extends HttpServlet {
                     getCategory(request, response, dao);
                 }
                 request.getRequestDispatcher("/ViewSubject.jsp").include(request, response);
+                break;
+            case "enroll-subject":
+                subStatus = enrollUser(request, response, dao);
+                if (subStatus) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Enrolled Successfully!");
+                    getSubjectsNotEnroll(request, response, dao);
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Enrolled un-successful!");
+                }
+                request.getRequestDispatcher("/Enroll.jsp").forward(request, response);
+                break;
+            case "un-enroll-subject":
+                subStatus = unenrollUser(request, response, dao);
+                if (subStatus) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Un-Enrolled Successfully!");
+                    getSubjectsEnroll(request, response, dao);
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("error_msg", "Un-Enroll un-successful!");
+                }
+                request.getRequestDispatcher("/Un-Enroll.jsp").forward(request, response);
+                break;
+                
         }
 
     }
@@ -205,7 +254,7 @@ public class SubjectServlet extends HttpServlet {
 
     private void viewSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         List<Subject> subList = dao.getSubList();
-        if (subList.size() != 0) {
+        if (subList.size() > 0) {
             request.setAttribute("Subject_List", subList);
         } else {
             request.setAttribute("display_error", true);
@@ -239,5 +288,65 @@ public class SubjectServlet extends HttpServlet {
         List<Category> category = dao.getSubCatList(subject);
         request.setAttribute("displayCatDetails", true);
         request.setAttribute("Category_List", category);
+    }
+
+    private void getSubjectsNotEnroll(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        List<Subject> subList = null;
+        if (login.getRegType().equals("Student")) {
+            subList = dao.getSubNotEnrollStudent(login);
+        } else {
+            subList = dao.getSubNotEnrollTeacher(login);
+        }
+        if (subList.size() > 0) {
+            request.setAttribute("Subject_List", subList);
+        }
+        else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Subjects found to Enroll!");
+        }
+    }
+
+    private boolean enrollUser(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        Integer sID = new Integer(request.getParameter("subjectID"));
+        Subject subject = new Subject(sID);
+        if (login.getRegType().equals("Teacher")) {
+            return dao.enrollTeacher(subject, login);
+        } else {
+            return dao.enrollStudent(subject, login);
+        }
+    }
+
+    private void getSubjectsEnroll(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        List<Subject> subList = null;
+        if (login.getRegType().equals("Student")) {
+            subList = dao.getSubEnrollStudent(login);
+        } else {
+            subList = dao.getSubEnrollTeacher(login);
+        }
+        if (subList.size() > 0) {
+            request.setAttribute("Subject_List", subList);
+        }
+        else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Enrolled Subjects found!");
+        }
+    }
+
+    private boolean unenrollUser(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        Integer sID = new Integer(request.getParameter("subjectSID"));
+        Subject subject = new Subject(sID);
+        if (login.getRegType().equals("Teacher")) {
+            return dao.unenrollTeacher(subject, login);
+        } else {
+            return dao.unenrollStudent(subject, login);
+        }
     }
 }

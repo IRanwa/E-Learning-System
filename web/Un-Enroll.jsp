@@ -1,6 +1,6 @@
 <%-- 
-    Document   : RemoveSubject
-    Created on : Sep 8, 2018, 8:18:05 AM
+    Document   : Un-Enroll
+    Created on : Sep 12, 2018, 11:27:02 PM
     Author     : Imesh Ranawaka
 --%>
 
@@ -24,7 +24,7 @@
 
             #nav-dropdown-container{display:none;}
             #nav-dropdown:hover #nav-dropdown-container{color:red;display:block}
-
+            
             .popup-dialog{
                 display:none;
                 position: fixed;
@@ -47,11 +47,21 @@
             }
         </style>
         <script>
-            function viewSub() {
+            function scrollToBody() {
+                var elmnt = document.getElementById("un-enroll-subject");
+                elmnt.scrollIntoView();
+            }
+            function viewSub(){
                 var sID = document.getElementById("sub-selection").value;
-                if (sID !== "") {
-                    window.location = ("SubjectServlet?Subject=Remove-Subject&subjectID=" + sID);
+                if (sID!=="") {
+                    window.location = ("SubjectServlet?Subject=Un-Enroll&subjectID=" + sID);
                 }
+            }
+            function unEnrollBtnClick(){
+                var modal = document.getElementById("popup-message");
+                modal.style.display = "block";
+                document.getElementById("sID").value = document.getElementById("sub-selection").value;
+                return false;
             }
             function closePopup() {
                 var modal = document.getElementById("popup-message");
@@ -62,16 +72,6 @@
                 if (event.target === modal) {
                     modal.style.display = "none";
                 }
-            };
-            function scrollToBody() {
-                var elmnt = document.getElementById("remove-subject");
-                elmnt.scrollIntoView();
-            }
-            function removeSubBtnClick() {
-                var modal = document.getElementById("popup-message");
-                modal.style.display = "block";
-                document.getElementById("sID").value = document.getElementById("sub-selection").value;
-                return false;
             }
         </script>
     </head>
@@ -90,36 +90,33 @@
                 </div>
 
                 <div class="w3-right w3-hide-small" id="nav-dropdown" >
-                    <a href="CategoryServlet?Category=View-Category" class="w3-bar-item w3-button" >Category</a>
+                    <a href="ContentServlet?Content=View-Content" class="w3-bar-item w3-button" >Content</a>
                     <div id="nav-dropdown-container" class="w3-white w3-card" 
                          style="position:absolute; margin-top:35px; width:120px">
-                        <a href="CategoryServlet?Category=Add-Category" class="w3-bar-item w3-button">
-                            Add Category
+                        <a href="ContentServlet?Content=Add-Content" class="w3-bar-item w3-button">
+                            Add Content
                         </a>
-                        <a href="CategoryServlet?Category=Remove-Category" class="w3-bar-item w3-button">
-                            Remove Category
+                        <a href="ContentServlet?Content=Remove-Content" class="w3-bar-item w3-button">
+                            Remove Content
                         </a>
-                        <a href="CategoryServlet?Category=Update-Category" class="w3-bar-item w3-button">
-                            Update Category
+                        <a href="ContentServlet?Content=Update-Content" class="w3-bar-item w3-button">
+                            Update Content
                         </a>
-                        <a href="CategoryServlet?Category=View-Category" class="w3-bar-item w3-button">
-                            View Category
+                        <a href="ContentServlet?Content=View-Content" class="w3-bar-item w3-button">
+                            View Content
                         </a>
                     </div>
                 </div>
 
                 <div class="w3-right w3-hide-small" id="nav-dropdown" >
-                    <a href="SubjectServlet?Subject=View-Subject" class="w3-bar-item w3-button" >Subject</a>
+                    <a href="SubjectServlet?Subject=Enroll" class="w3-bar-item w3-button" >Subject</a>
                     <div id="nav-dropdown-container" class="w3-white w3-card" 
-                         style="position:absolute; margin-top:35px; width:120px">
-                        <a href="SubjectServlet?Subject=Add-Subject" class="w3-bar-item w3-button">
-                            Add Subject
+                         style="position:absolute; margin-top:35px; width:130px">
+                        <a href="SubjectServlet?Subject=Enroll" class="w3-bar-item w3-button" style="width:100%">
+                            Enroll
                         </a>
-                        <a href="SubjectServlet?Subject=Remove-Subject" class="w3-bar-item w3-button">
-                            Remove Subject
-                        </a>
-                        <a href="SubjectServlet?Subject=Update-Subject" class="w3-bar-item w3-button">
-                            Update Subject
+                        <a href="SubjectServlet?Subject=Un-Enroll" class="w3-bar-item w3-button">
+                            Un-Enroll
                         </a>
                         <a href="SubjectServlet?Subject=View-Subject" class="w3-bar-item w3-button">
                             View Subject
@@ -139,7 +136,7 @@
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="un-enroll-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%; text-align: center;">
                 <h1>${msg}</h1>
             </div>
@@ -148,21 +145,21 @@
 
         <!-- Error Message -->
         <c:if test="${display_error}">
-            <div id="remove-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
+            <div id="un-enroll-subject" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%">
                 <p><font color="red">*</font> ${error_msg}</p>
             </div>
         </c:if>
         <!-- Error Message End -->
 
-        <!-- Remove Subject Form -->
+        <!-- Enroll Subject Form -->
         <c:if test="${Subject_List!=null}">
-            <form id="remove-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
+            <form id="un-enroll-subject" class="w3-container w3-round w3-white w3-padding-16 w3-animate-top" 
                   style="max-width:400px; margin: 2% 35%"
-                  onsubmit="return removeSubBtnClick()" method="POST">
-                <input type="hidden" name="command" value="remove-subject"/>
+                  onsubmit="return unEnrollBtnClick()" method="POST">
+                <input type="hidden" name="command" value="un-enroll-subject"/>
                 <div>
-                    <h2>Remove Subject</h2>
+                    <h2>Enroll</h2>
                     <div>
                         <p><strong>Subject Title <font color="red">*</font></strong></p>
                         <select class="w3-select w3-round" id="sub-selection" name="subjectID" required>
@@ -183,48 +180,60 @@
                     <div>
                         <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="button" value="View Details"
                                onclick="viewSub()"/>
-                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Un-Enroll"/>
                         <input class="w3-button w3-round w3-text-black w3-teal " type="reset" value="Reset"/>
                     </div>
                 </div>
             </form>
         </c:if>
-        <!-- Remove Subject Form End -->
+        <!-- Enroll Subject Form End -->
 
-        <!-- Display Subject Details -->
+        <!-- Display Subject & Category Details -->
         <c:if test="${displaySubDetails}">
             <div id="regerrormsg" class="w3-container w3-round w3-white w3-padding w3-animate-top" 
                  style="max-width:400px; margin: 1% 35%">
                 <table  class="w3-table w3-bordered">
                     <tr>
-                        <th>Subject ID</th>
                         <th>Subject Title</th>
                         <th>Subject Description</th>
                     </tr>
                     <tr>
-                        <td>${displaySub.sID}</td>
                         <td>${displaySub.sTitle}</td>
                         <td>${displaySub.sDes}</td>
                     </tr>
                 </table>
+                <table  class="w3-table w3-bordered">
+                    <tr>
+                        <th>Category Title</th>
+                        <th>Category Description</th>
+                    </tr>
+                    <c:forEach var="cat" items="${Category_List}">
+                        <tr>
+                            <td>${cat.cTitle}</td>
+                            <td>${cat.cDes}</td>
+                        </tr>
+                    </c:forEach>
+
+                </table>
             </div>
         </c:if>
-        <!-- EDisplay Subject Details End -->
+        <!-- Display Subject & Category Details End -->
 
         <!-- Popup Confirm Box -->
         <div id="popup-message" class="popup-dialog">
             <form action="SubjectServlet" method="POST">
-                <input type="hidden" name="command" value="remove-subject"/>
+                <input type="hidden" name="command" value="un-enroll-subject"/>
                 <input type="hidden" id="sID" name="subjectSID" value=""/>
                 <div class="w3-container w3-round w3-white w3-padding w3-animate-top" style="max-width:400px; margin: 1% 35%">
                     <span class="close" onclick="closePopup()">&times;</span>
-                    <p class="w3-large">Are you sure you wish to remove the subject?</p>
+                    <p class="w3-large">Are you sure you wish to Un-Enroll?</p>
                     <input class="w3-button w3-round w3-text-black w3-teal w3-margin-right" type="submit" value="Sure"/>
                     <input class="w3-button w3-round w3-text-black w3-teal " type="button" onclick="closePopup()" value="Close"/>
                 </div>
             </form>
         </div>
         <!-- Popup Confirm Box  End -->
+        
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
@@ -233,3 +242,5 @@
 
     </body>
 </html>
+
+

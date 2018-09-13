@@ -32,7 +32,7 @@
             }
             function updateSubBtnClick() {
                 var sID = document.getElementById("sub-selection").value;
-                if (sID != "") {
+                if (sID !== "") {
                     window.location = ("SubjectServlet?Subject=Update-Subject&subjectID=" + sID);
                 }
                 return false;
