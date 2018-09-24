@@ -234,10 +234,8 @@
         </div>
         <!-- Popup Confirm Box  End -->
         
-        <!-- Footer -->
-        <footer class="w3-center w3-light-grey w3-padding-32">
-            <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
-        </footer>
+       <!-- Footer -->
+        <jsp:include page="footer.jsp"/>
 
 
     </body>

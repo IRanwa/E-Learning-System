@@ -137,9 +137,7 @@
         
         
         <!-- Footer -->
-        <footer class="w3-center w3-light-grey w3-padding-32">
-            <p>Copyright © 2018 <%= title%>. All rights reserved.</p>
-        </footer>
+        <jsp:include page="footer.jsp"/>
 
     </body>
 </html>
