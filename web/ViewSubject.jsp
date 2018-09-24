@@ -152,6 +152,9 @@
                         <th>Subject ID</th>
                         <th>Subject Title</th>
                         <th>Subject Description</th>
+                        <% if (!login.getRegType().equals("Admin")) {%>
+                            <th>Enroll Status</th>
+                        <%}%>
                     </tr>
                     <c:choose>
                         <c:when test="${All_Subjects}">
@@ -160,6 +163,14 @@
                                     <td>${sub.sID}</td>
                                     <td>${sub.sTitle}</td>
                                     <td>${sub.sDes}</td>
+                                    <% if (!login.getRegType().equals("Admin")) {%>
+                                        <c:if test="${sub.userEnroll}">
+                                            <td class="w3-text-green">Enrolled</td>
+                                        </c:if>
+                                        <c:if test="${!sub.userEnroll}">
+                                            <td class="w3-text-red">Not Enrolled</td>
+                                        </c:if>
+                                    <%}%>
                                 </tr>
                             </c:forEach>
                         </c:when>
@@ -168,6 +179,14 @@
                                 <td>${displaySub.sID}</td>
                                 <td>${displaySub.sTitle}</td>
                                 <td>${displaySub.sDes}</td>
+                                <% if (!login.getRegType().equals("Admin")) {%>
+                                <c:if test="${displaySub.userEnroll}">
+                                    <td class="w3-text-green">Enrolled</td>
+                                </c:if>
+                                <c:if test="${!displaySub.userEnroll}">
+                                    <td class="w3-text-red">Not Enrolled</td>
+                                </c:if>
+                                <%}%>
                             </tr>
                         </c:otherwise>
                     </c:choose>

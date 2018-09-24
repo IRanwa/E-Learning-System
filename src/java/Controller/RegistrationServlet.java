@@ -11,7 +11,10 @@ import Model.Student;
 import Model.Teacher;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -92,11 +95,11 @@ public class RegistrationServlet extends HttpServlet {
             boolean emailRegistered = checkEmail(request, response, dao);
             boolean passMatch = checkPassMatch(request, response);
 
-            if (uNameRegistered || !emailRegistered || !passMatch) {
+            if (uNameRegistered || emailRegistered || !passMatch) {
                 if (uNameRegistered) {
                     msgs.add("Username already registered!");
                 }
-                if (!emailRegistered) {
+                if (emailRegistered) {
                     msgs.add("Email already used!");
                 }
                 if (!passMatch) {
@@ -114,7 +117,7 @@ public class RegistrationServlet extends HttpServlet {
                     request.setAttribute("display_msg", true);
                     request.setAttribute("msg", "Registered Successfully!");
                     request.getRequestDispatcher("/Registration.jsp").include(request, response);
-                }else{
+                } else {
                     msgs.add("User Registration Un-Successful!");
                     request.setAttribute("display_error", true);
                     request.setAttribute("msgs", msgs);
@@ -154,7 +157,12 @@ public class RegistrationServlet extends HttpServlet {
         String email = request.getParameter("Email");
         String pass = request.getParameter("Pass");
         String regType = request.getParameter("RegType");
-        Login login = new Login(uName, pass, email, regType);
+
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+        Login login = new Login(uName, pass, email, regType, sqlDate);
 
         return dao.addLogin(login);
     }

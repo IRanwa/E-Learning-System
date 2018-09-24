@@ -4,6 +4,7 @@
     Author     : Imesh Ranawaka
 --%>
 
+<%@page import="Model.Login"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -33,7 +34,9 @@
         </script>
     </head>
     <body class="w3-amber" onload="scrollToBody();">
-
+        <%
+            Login login = (Login) session.getAttribute("user");
+        %>
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
             <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
@@ -99,7 +102,7 @@
         <!-- User Details Section -->
         <div id="welcome" class="w3-container w3-round w3-white w3-animate-top" style="max-width:300px; margin: 2%">
             <h3>Welcome!</h3>
-            <p style="margin:0">${Username}</p>
+            <p style="margin:0"><%= login.getUname()%></p>
             <a href="#" style="text-decoration: none;">View Profile</a>
         </div>
         <!-- User Details Section End -->

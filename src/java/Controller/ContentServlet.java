@@ -13,6 +13,7 @@ import Model.Subject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -73,18 +75,41 @@ public class ContentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html");
         String command = request.getParameter("Content");
         DAO dao = new DAO();
         String sID;
+        String cID;
+        String conID;
         switch (command) {
             case "Add-Content":
                 sID = request.getParameter("subjectID");
                 getSubjectsEnroll(request, response, dao);
                 if (sID != null && !sID.equals("")) {
                     getSubject(request, response, dao);
-                    getCategory(request, response, dao);
+                    getCategoryList(request, response, dao);
                 }
                 request.getRequestDispatcher("/AddContent.jsp").forward(request, response);
+                break;
+            case "Remove-Content":
+                conID = request.getParameter("contentID");
+                if (conID != null) {
+                    getConDetails(request, response, dao);
+                    request.getRequestDispatcher("/DisplayContent.jsp").forward(request, response);
+                } else {
+                    sID = request.getParameter("subjectID");
+                    getSubjectsEnroll(request, response, dao);
+                    if (sID != null) {
+                        getSubject(request, response, dao);
+                        getCategoryList(request, response, dao);
+                        cID = request.getParameter("categoryID");
+                        if (cID != null) {
+                            getCategory(request, response, dao);
+                            getContentList(request, response, dao);
+                        }
+                    }
+                    request.getRequestDispatcher("/RemoveContent.jsp").include(request, response);
+                }
                 break;
         }
     }
@@ -112,10 +137,22 @@ public class ContentServlet extends HttpServlet {
                     request.setAttribute("msg", "Content Added Successfully!");
                 } else {
                     request.setAttribute("display_error", true);
-                    request.setAttribute("error_msg", "Content adding un-successful!");
+                    request.setAttribute("msg", "Content Adding Un-Successfully!");
                 }
                 getSubjectsEnroll(request, response, dao);
                 request.getRequestDispatcher("/AddContent.jsp").include(request, response);
+                break;
+            case "remove-content":
+                status = removeContent(request, response, dao);
+                if (status) {
+                    request.setAttribute("display_msg", true);
+                    request.setAttribute("msg", "Content Removed Successfully!");
+                } else {
+                    request.setAttribute("display_error", true);
+                    request.setAttribute("msg", "Content Removing Un-Successfully!");
+                }
+                getSubjectsEnroll(request, response, dao);
+                request.getRequestDispatcher("/RemoveContent.jsp").include(request, response);
                 break;
         }
     }
@@ -150,15 +187,20 @@ public class ContentServlet extends HttpServlet {
     private void getSubject(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         Integer sID = new Integer(request.getParameter("subjectID"));
         Subject subject = new Subject(sID);
-        subject = dao.getSubject(subject);
         request.setAttribute("displaySub", subject);
     }
 
-    private void getCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+    private void getCategoryList(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         Subject subject = (Subject) request.getAttribute("displaySub");
         List<Category> category = dao.getSubCatList(subject);
-        request.setAttribute("displayCatDetails", true);
-        request.setAttribute("Category_List", category);
+        if (category.size() > 0) {
+            request.setAttribute("displayCatDetails", true);
+            request.setAttribute("Category_List", category);
+        } else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Categories found!");
+        }
+
     }
 
     private boolean addContent(HttpServletRequest request, HttpServletResponse response, DAO dao) {
@@ -173,8 +215,7 @@ public class ContentServlet extends HttpServlet {
                 String fileName = filePart.getSubmittedFileName();
                 int lastIndex = fileName.lastIndexOf(".");
                 String ext = fileName.substring(lastIndex);
-
-                String path = "";// System.getProperty("user.dir");
+                String path = request.getServletContext().getRealPath(File.separator) + "\\FileUploads\\";// System.getProperty("user.dir");
                 switch (contentType) {
                     case "image/png":
                     case "image/jpeg":
@@ -191,7 +232,7 @@ public class ContentServlet extends HttpServlet {
                     case "video/3gpp":
                         path += "Video";
                         break;
-                    case "audio/mpeg":
+                    case "audio/mp3":
                     case "audio/mp4":
                         path += "Audio";
                         break;
@@ -202,19 +243,16 @@ public class ContentServlet extends HttpServlet {
                         request.setAttribute("display_error", true);
                         request.setAttribute("error_msg", "File format Invalid!");
                         getSubjectsEnroll(request, response, dao);
-                        request.getRequestDispatcher("/AddContent.jsp").include(request, response);
+                        request.getRequestDispatcher("/AddContent.jsp").forward(request, response);
                         return false;
                 }
 
-                HttpSession session = request.getSession();
-                Login login = (Login) session.getAttribute("user");
-
                 if (cType.equals("Lessons")) {
-                    path += "/Lessons";
+                    path += "\\Lessons";
                 } else if (cType.equals("Test")) {
-                    path += "/Test";
+                    path += "\\Test";
                 } else {
-                    path += "/Tutorials";
+                    path += "\\Tutorials";
                 }
 
                 File file = new File(path);
@@ -222,14 +260,16 @@ public class ContentServlet extends HttpServlet {
                     file.mkdirs();
                 }
 
-                Content con = new Content(title, desc, cType, cID, login.getUname(), "W");
+                HttpSession session = request.getSession();
+                Login login = (Login) session.getAttribute("user");
+                Content con = new Content(title, desc, cType, cID, login.getUname(), "P");
                 int conID = dao.addContent(con);
                 con.setcID(conID);
 
-                file = new File(path + "/" + conID + ext);
+                file = new File(path + "\\" + login.getUname() + "_" + conID + ext);
                 InputStream input = filePart.getInputStream();
                 Files.copy(input, file.toPath());
-                con.setFilePath(file.getPath());
+                con.setFilePath(file.getPath().replace(request.getServletContext().getRealPath(File.separator) + "\\", ""));
 
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = new Date();
@@ -241,7 +281,7 @@ public class ContentServlet extends HttpServlet {
                 request.setAttribute("display_error", true);
                 request.setAttribute("error_msg", "Added Content Size more than 16MB!");
                 getSubjectsEnroll(request, response, dao);
-                request.getRequestDispatcher("/AddContent.jsp").include(request, response);
+                request.getRequestDispatcher("/AddContent.jsp").forward(request, response);
             }
         } catch (IOException ex) {
             Logger.getLogger(ContentServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -249,5 +289,44 @@ public class ContentServlet extends HttpServlet {
             Logger.getLogger(ContentServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
+    }
+
+    private void getContentList(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        Integer cID = new Integer(request.getParameter("categoryID"));
+        Category cat = new Category(cID);
+        List<Content> contentList = dao.getContentList(cat, login);
+        if (contentList.size() > 0) {
+            request.setAttribute("Content_List", contentList);
+        } else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Content found!");
+        }
+
+    }
+
+    private void getCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        Integer cID = new Integer(request.getParameter("categoryID"));
+        Category subject = new Category(cID);
+        request.setAttribute("displayCat", subject);
+    }
+
+    private void getConDetails(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+
+        //try {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+        Integer conID = Integer.parseInt(request.getParameter("contentID"));
+        Content content = new Content(conID);
+        content = dao.getContent(content, login);
+        content.setFilePath(content.getFilePath());
+        request.setAttribute("Content_Details", content);
+    }
+
+    private boolean removeContent(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        Integer conID = new Integer(request.getParameter("contentID"));
+        Content content = new Content(conID);
+        return dao.removeContent(content);
     }
 }

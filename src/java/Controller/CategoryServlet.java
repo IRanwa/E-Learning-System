@@ -230,7 +230,7 @@ public class CategoryServlet extends HttpServlet {
         request.setAttribute("displaySub", subject);
     }
 
-    private boolean removeCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) throws ServletException, IOException {
+    private boolean removeCategory(HttpServletRequest request, HttpServletResponse response, DAO dao){
         String cID = request.getParameter("categorycID");
         if (cID.equals("All")) {
             Integer sID = new Integer(request.getParameter("subjectsID"));
@@ -242,7 +242,7 @@ public class CategoryServlet extends HttpServlet {
         }
     }
 
-    private boolean updateCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) throws ServletException, IOException {
+    private boolean updateCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         Integer cID = new Integer(request.getParameter("categoryCID"));
         String title = request.getParameter("CTitle");
         String desc = request.getParameter("CDescription");

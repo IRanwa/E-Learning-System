@@ -23,6 +23,15 @@ public class Content {
     String filePath;
     Date dateCreated;
 
+    public Content(int cID) {
+        this.cID = cID;
+    }
+    
+    public Content(int cID, String title) {
+        this.cID = cID;
+        this.title = title;
+    }
+    
     public Content(String title, String desc, String type, int catID, String tUName, String status) {
         this.title = title;
         this.desc = desc;

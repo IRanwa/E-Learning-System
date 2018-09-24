@@ -5,6 +5,8 @@
  */
 package Model;
 
+import java.sql.Date;
+
 /**
  *
  * @author Imesh Ranawaka
@@ -15,12 +17,14 @@ public class Login {
     String pass;
     String email;
     String regType;
+    Date lastLogin;
 
-    public Login(String uname, String pass, String email, String regType) {
+    public Login(String uname, String pass, String email, String regType, Date lastLogin) {
         this.uname = uname;
         this.pass = pass;
         this.email = email;
         this.regType = regType;
+        this.lastLogin = lastLogin;
     }
     
     public Login(String uname, String pass) {
@@ -44,6 +48,10 @@ public class Login {
         this.regType = regType;
     }
 
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+    
     public String getUname() {
         return uname;
     }
@@ -58,5 +66,9 @@ public class Login {
 
     public String getRegType() {
         return regType;
+    }
+    
+    public Date getLastLogin() {
+        return lastLogin;
     }
 }

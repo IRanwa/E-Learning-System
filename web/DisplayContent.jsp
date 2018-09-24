@@ -1,10 +1,9 @@
 <%-- 
-    Document   : Teacher_HomePage
-    Created on : Sep 9, 2018, 6:24:03 PM
+    Document   : DisplayContent
+    Created on : Sep 23, 2018, 7:21:49 PM
     Author     : Imesh Ranawaka
 --%>
 
-<%@page import="Model.Login"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -14,7 +13,6 @@
         <title>Home Page (<%= title%>)</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <link rel="stylesheet" type="text/css" href="CSS/style.css">
         <style>
             body {font-family: "Times New Roman", Georgia, Serif;}
@@ -22,21 +20,20 @@
                 font-family: "Playfair Display";
                 letter-spacing: 5px;
             }
-
+            #content-details td{
+                padding-right: 100px;
+            }
             #nav-dropdown-container{display:none;}
             #nav-dropdown:hover #nav-dropdown-container{color:red;display:block}
         </style>
         <script type="text/javascript">
             function scrollToBody() {
-                var elmnt = document.getElementById("welcome");
+                var elmnt = document.getElementById("details");
                 elmnt.scrollIntoView();
             }
         </script>
     </head>
     <body class="w3-amber" onload="scrollToBody();">
-        <%
-            Login login = (Login) session.getAttribute("user");
-        %>
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
             <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
@@ -93,71 +90,81 @@
         </header>
         <!-- Header End -->
 
-        <!-- User Details Section -->
-        <div id="welcome" class="w3-container w3-round w3-white w3-animate-top" style="max-width:300px; margin: 2%">
-            <h3>Welcome!</h3>
-            <p style="margin:0"><%= login.getUname()%></p>
-            <a href="#" style="text-decoration: none;">View Profile</a>
-        </div>
+        <!-- Content Details Section -->
+        <c:if test="${Content_Details!=null}">
+            <div id="details" class="w3-container w3-round w3-white w3-animate-top w3-padding-24" 
+                 style="margin: 2%; display: inline-table">
+                <h2>Content Details</h2>
+                <table class="w3-table w3-bordered" id="content-details">
+                    <tr>
+                        <td><b>Title : </b></td>
+                        <td>${Content_Details.title}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Description : </b></td>
+                        <td>${Content_Details.desc}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Type : </b></td>
+                        <td>${Content_Details.type}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Status : </b></td>
+                        <c:choose>
+                            <c:when test="${Content_Details.status == 'P' }">
+                                <td>Pending</td>
+                            </c:when>
+                            <c:when test="${Content_Details.status == 'A'}">
+                                <td>Approved</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>Rejected</td>
+                            </c:otherwise>
+                        </c:choose>
+                    </tr>
+                    <tr>
+                        <td><b>Date Created : </b></td>
+                        <td>${Content_Details.dateCreated}</td>
+                    </tr>
+                </table>
+                <form action="" >
+                    <div>
+                        <input type="hidden" value="${Content_Details.cID}"/>
+                        <a class="w3-button w3-round w3-text-black w3-teal w3-margin" href="${Content_Details.filePath}" 
+                           download="${Content_Details.title}">Download</a>
+                        <input class="w3-button w3-round w3-text-black w3-teal w3-margin" type="submit" value="Remove"/>
+                        
+                        <c:choose>
+                            <c:when test="${Content_Details.status == 'P' }">
+                                <input class="w3-button w3-round w3-text-black w3-teal" type="submit" value="Approve"/>
+                                <input class="w3-button w3-round w3-text-black w3-red" type="submit" value="Reject"/>
+                            </c:when>
+                            <c:when test="${Content_Details.status == 'A'}">
+                                <input class="w3-button w3-round w3-text-black w3-red" type="submit" value="Reject"/>
+                            </c:when>
+                            <c:otherwise>
+                                <input class="w3-button w3-round w3-text-black w3-green" type="submit" value="Approve"/>
+                            </c:otherwise>
+                        </c:choose>
+                    </div> 
+                </form>
+            </div>
+
+            <div class="w3-container w3-round w3-white w3-animate-top" 
+                 style="margin: 2%;">
+                <object data="${Content_Details.filePath}" type="text/html" 
+                        class="w3-container w3-round w3-animate-top w3-margin"
+                        style="width:100%; height:500px;">
+                    <embed src="${Content_Details.filePath}" type="text/html"   />
+                </object>
+            </div>
+
+
+        </c:if>
         <!-- User Details Section End -->
 
-        <!-- Approve Content Section -->
-        <div class="w3-container w3-round w3-white w3-animate-top" style="max-width:100%; margin: 2%">
-            <table class="w3-table w3-bordered">
-                <tr>
-                    <td>Subject</td>
-                    <td>Category</td>
-                    <td>Type</td>
-                    <td>Sort By</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <select name="subject" class="w3-round" style="width:75%">
-                            <option value="all">All</option>
-                            <c:forEach var="tempSub" items="${SubList}">
-                                <option value="${tempSub}">${tempSub}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="category" class="w3-round" style="width:75%">
-                            <option value="all">All</option>
-                            <c:forEach var="tempCat" items="${CatList}">
-                                <option value="${tempCat}">${tempCat}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="type" class="w3-round" style="width:75%">
-                            <option value="all">All</option>
-                            <option value="lessons">Lessons</option>
-                            <option value="test">Test</option>
-                            <option value="tutorials">Tutorials</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="sortBy" class="w3-round" style="width:75%">
-                            <option value="default"></option>
-                            <option value="By Name A-Z">By Name : A-Z</option>
-                            <option value="By Name Z-A">By Name : Z-A</option>
-                            <option value="By Date Newest">By Date : Newest</option>
-                            <option value="By Date Oldest">By Date : oldest</option>
-                            <option value="By Status Approved">By Status : Approved</option>
-                            <option value="By Status Rejected">By Status : Rejected</option>
-                            <option value="By Status Waiting">By Status : Waiting</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button class="w3-round w3-button w3-cyan" style="width:50%; padding: 2%" onclick="" >Search</button>
-                    </td>
-                </tr>
-            </table>
-            <hr>
-        </div>
-        <!-- Approve Content Section End -->
-
-
+        
+        
         <!-- Footer -->
         <footer class="w3-center w3-light-grey w3-padding-32">
             <label>Copyright &#169; 2018 <%= title%>. All rights reserved.</label>
@@ -166,3 +173,4 @@
 
     </body>
 </html>
+

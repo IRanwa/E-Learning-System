@@ -14,25 +14,39 @@ public class Subject {
     private int sID;
     private String sTitle;
     private String sDes;
-    
+    private boolean userEnroll;
+
+
     public Subject(int sID) {
         this.sID = sID;
     }
-    
     
     public Subject( String sTitle) {
         this.sTitle = sTitle;
     }
     
-    public Subject( String sTitle, String sDes) {
+    public Subject(String sTitle, String sDes) {
         this.sTitle = sTitle;
         this.sDes = sDes;
+    }
+    
+    public Subject( String sTitle, String sDes, Boolean userEnroll) {
+        this.sTitle = sTitle;
+        this.sDes = sDes;
+        this.userEnroll = userEnroll;
     }
     
     public Subject(int sID, String sTitle, String sDes) {
         this.sID = sID;
         this.sTitle = sTitle;
         this.sDes = sDes;
+    }
+    
+    public Subject(int sID, String sTitle, String sDes, Boolean userEnroll) {
+        this.sID = sID;
+        this.sTitle = sTitle;
+        this.sDes = sDes;
+        this.userEnroll = userEnroll;
     }
     
     public void setsID(int sID) {
@@ -47,6 +61,10 @@ public class Subject {
         this.sDes = sDes;
     }
 
+    public void setUserEnroll(boolean userEnroll) {
+        this.userEnroll = userEnroll;
+    }
+    
     public int getsID() {
         return sID;
     }
@@ -57,5 +75,9 @@ public class Subject {
 
     public String getsDes() {
         return sDes;
+    }
+    
+    public boolean isUserEnroll() {
+        return userEnroll;
     }
 }
