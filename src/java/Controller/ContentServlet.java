@@ -75,6 +75,9 @@ public class ContentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+
         response.setContentType("text/html");
         String command = request.getParameter("Content");
         DAO dao = new DAO();
@@ -98,14 +101,23 @@ public class ContentServlet extends HttpServlet {
                     request.getRequestDispatcher("/DisplayContent.jsp").forward(request, response);
                 } else {
                     sID = request.getParameter("subjectID");
-                    getSubjectsEnroll(request, response, dao);
+                    if (login.getRegType().equals("Teacher")) {
+                        getSubjectsEnroll(request, response, dao);
+                    } else {
+                        getSubjectList(request, response, dao);
+                    }
+
                     if (sID != null) {
                         getSubject(request, response, dao);
                         getCategoryList(request, response, dao);
                         cID = request.getParameter("categoryID");
                         if (cID != null) {
                             getCategory(request, response, dao);
-                            getContentList(request, response, dao);
+                            if (login.getRegType().equals("Teacher")) {
+                                getContentList(request, response, dao);
+                            } else {
+                                getAllContentList(request, response, dao);
+                            }
                         }
                     }
                     request.getRequestDispatcher("/RemoveContent.jsp").include(request, response);
@@ -125,6 +137,9 @@ public class ContentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        Login login = (Login) session.getAttribute("user");
+
         String command = request.getParameter("command");
         DAO dao = new DAO();
         String sID;
@@ -149,10 +164,14 @@ public class ContentServlet extends HttpServlet {
                     request.setAttribute("msg", "Content Removed Successfully!");
                 } else {
                     request.setAttribute("display_error", true);
-                    request.setAttribute("msg", "Content Removing Un-Successfully!");
+                    request.setAttribute("error_msg", "Content Removing Un-Successfully!");
                 }
-                getSubjectsEnroll(request, response, dao);
-                request.getRequestDispatcher("/RemoveContent.jsp").include(request, response);
+                if (login.getRegType().equals("Teacher")) {
+                    getSubjectsEnroll(request, response, dao);
+                } else {
+                    getSubjectList(request, response, dao);
+                }
+                request.getRequestDispatcher("/RemoveContent.jsp").forward(request, response);
                 break;
         }
     }
@@ -306,6 +325,20 @@ public class ContentServlet extends HttpServlet {
 
     }
 
+    private void getAllContentList(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        HttpSession session = request.getSession();
+        Integer cID = new Integer(request.getParameter("categoryID"));
+        Category cat = new Category(cID);
+        List<Content> contentList = dao.getAllConList(cat);
+        if (contentList.size() > 0) {
+            request.setAttribute("Content_List", contentList);
+        } else {
+            request.setAttribute("display_error", true);
+            request.setAttribute("error_msg", "No Content found!");
+        }
+
+    }
+
     private void getCategory(HttpServletRequest request, HttpServletResponse response, DAO dao) {
         Integer cID = new Integer(request.getParameter("categoryID"));
         Category subject = new Category(cID);
@@ -319,7 +352,7 @@ public class ContentServlet extends HttpServlet {
         Login login = (Login) session.getAttribute("user");
         Integer conID = Integer.parseInt(request.getParameter("contentID"));
         Content content = new Content(conID);
-        content = dao.getContent(content, login);
+        content = dao.getContent(content);
         content.setFilePath(content.getFilePath());
         request.setAttribute("Content_Details", content);
     }
@@ -328,5 +361,10 @@ public class ContentServlet extends HttpServlet {
         Integer conID = new Integer(request.getParameter("contentID"));
         Content content = new Content(conID);
         return dao.removeContent(content);
+    }
+
+    private void getSubjectList(HttpServletRequest request, HttpServletResponse response, DAO dao) {
+        ArrayList<Subject> subList = dao.getSubList();
+        request.setAttribute("Subject_List", subList);
     }
 }

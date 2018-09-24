@@ -36,6 +36,10 @@
         <servlet-name>ContentServlet</servlet-name>
         <servlet-class>Controller.ContentServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>Controller.LogoutServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegistrationServlet</servlet-name>
         <url-pattern>/RegistrationServlet</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>ContentServlet</servlet-name>
         <url-pattern>/ContentServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

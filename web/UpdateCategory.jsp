@@ -30,90 +30,32 @@
                 var elmnt = document.getElementById("update-category");
                 elmnt.scrollIntoView();
             }
-            
-            function getCategory(){
+
+            function getCategory() {
                 var sID = document.getElementById("sub-selection").value;
-                if(sID !== ""){
+                if (sID !== "") {
                     window.location = ("CategoryServlet?Category=Update-Category&subjectID=" + sID);
                 }
             }
-            function displayCatDetails(){
+            function displayCatDetails() {
                 var sID = document.getElementById("sub-selection").value;
                 var cID = document.getElementById("cat-selection").value;
-                if(sID !== "" && cID !== ""){
+                if (sID !== "" && cID !== "") {
                     window.location = ("CategoryServlet?Category=Update-Category&subjectID=" + sID +
-                            "&categoryID="+cID);
+                            "&categoryID=" + cID);
                 }
             }
             function resetUpdateForm() {
                 document.getElementById("catTitle").value = "";
                 document.getElementById("catDesc").value = "";
             }
-            
-            
+
+
         </script>
     </head>
     <body class="w3-amber" onload="scrollToBody();">
-
-        <!-- Navbar (sit on top) -->
-        <div class="w3-top">
-            <div class="w3-bar w3-white w3-padding w3-card" style="letter-spacing:4px;">
-                <a href="index.html" class="w3-bar-item w3-button"><%= title%></a>
-                <!-- Right-sided navbar links. Hide them on small screens -->
-
-                <div class="w3-right w3-hide-small">
-                    <a href="index.html#aboutUs" class="w3-bar-item w3-button">About</a>
-                    <a href="#menu" class="w3-bar-item w3-button">Contact</a>
-                    <a href="LogoutServlet" class="w3-bar-item w3-button">Logout</a>
-                </div>
-
-                <div class="w3-right w3-hide-small" id="nav-dropdown" >
-                    <a href="CategoryServlet?Category=View-Category" class="w3-bar-item w3-button" >Category</a>
-                    <div id="nav-dropdown-container" class="w3-white w3-card" 
-                         style="position:absolute; margin-top:35px; width:120px">
-                        <a href="CategoryServlet?Category=Add-Category" class="w3-bar-item w3-button">
-                            Add Category
-                        </a>
-                        <a href="CategoryServlet?Category=Remove-Category" class="w3-bar-item w3-button">
-                            Remove Category
-                        </a>
-                        <a href="CategoryServlet?Category=Update-Category" class="w3-bar-item w3-button">
-                            Update Category
-                        </a>
-                        <a href="CategoryServlet?Category=View-Category" class="w3-bar-item w3-button">
-                            View Category
-                        </a>
-                    </div>
-                </div>
-
-                <div class="w3-right w3-hide-small" id="nav-dropdown" >
-                    <a href="SubjectServlet?Subject=View-Subject" class="w3-bar-item w3-button" >Subject</a>
-                    <div id="nav-dropdown-container" class="w3-white w3-card" 
-                         style="position:absolute; margin-top:35px; width:120px">
-                        <a href="SubjectServlet?Subject=Add-Subject" class="w3-bar-item w3-button">
-                            Add Subject
-                        </a>
-                        <a href="SubjectServlet?Subject=Remove-Subject" class="w3-bar-item w3-button">
-                            Remove Subject
-                        </a>
-                        <a href="SubjectServlet?Subject=Update-Subject" class="w3-bar-item w3-button">
-                            Update Subject
-                        </a>
-                        <a href="SubjectServlet?Subject=View-Subject" class="w3-bar-item w3-button">
-                            View Subject
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Header -->
-        <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
-            <img class="w3-image" src="Images/e-learning%20(1).png" alt="Main Image" width="1600" height="800">
-            <div class="w3-display-bottomleft w3-padding-large w3-opacity">
-                <h1 class="w3-xxlarge"><%= title%></h1>
-            </div>
-        </header>
+        <!-- Header & Nav Bar -->
+        <jsp:include page="Header.jsp"/>
 
         <!-- Successful Message -->
         <c:if test="${display_msg}">
@@ -175,7 +117,7 @@
                                             <option value="${Cat.cID}" > ${Cat.cTitle}</option>
                                         </c:otherwise>
                                     </c:choose>
-                                    
+
                                 </c:forEach>
                             </select>
                         </div> 
@@ -210,9 +152,9 @@
             </form>
         </c:if>
         <!-- Update Subject Details End -->
-        
+
         <!-- Footer -->
-        <jsp:include page="footer.jsp"/>
+        <jsp:include page="Footer.jsp"/>
 
     </body>
 </html>

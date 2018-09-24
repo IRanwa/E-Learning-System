@@ -520,11 +520,10 @@ public class DAO {
         return contentList;
     }
 
-    public Content getContent(Content content, Login login) {
+    public Content getContent(Content content) {
         try {
-            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from content as c left join pendingcontent as pc on (pc.cID = c.cID) where pc.cID=? and c.tUname=?");
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from content as c left join pendingcontent as pc on (pc.cID = c.cID) where pc.cID=?");
             ps.setInt(1, content.getcID());
-            ps.setString(2, login.getUname());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 content.setTitle(rs.getString("title"));
@@ -545,13 +544,31 @@ public class DAO {
         try {
             PreparedStatement ps = (PreparedStatement) connection.prepareStatement("delete from content where cID=?");
             ps.setInt(1, content.getcID());
-            return ps.execute();
+            ps.executeUpdate();
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
 
+    public List<Content> getAllConList(Category category) {
+        List<Content> contentList = new ArrayList<>();
+        try {
+            PreparedStatement ps = (PreparedStatement) connection.prepareStatement("select * from content where catID=?");
+            ps.setInt(1, category.getcID());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int conID = rs.getInt("cID");
+                String conTitle = rs.getString("title");
+                Content con = new Content(conID, conTitle);
+                contentList.add(con);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return contentList;
+    }
     /*Content Table End*/
 
  /*Pending Content Table*/
